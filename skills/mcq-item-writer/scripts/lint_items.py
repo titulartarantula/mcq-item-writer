@@ -51,7 +51,12 @@ NOTA_RE = re.compile(r"\bnone of (the )?(above|these|the options|the following)\
 AOTA_RE = re.compile(r"\ball of (the )?(above|these|the options|the following)\b", re.I)
 ROMAN_LIST_RE = re.compile(r"(^|\n)\s*(I|II|III|IV|V|VI)[.):]\s", re.M)
 RANK_RE = re.compile(r"\b(rank|arrange|order|sequence)\b[^.?]*\b(following|these|items|steps)\b", re.I)
-COMBO_RE = re.compile(r"^\s*((both\s+)?[A-H1-9IVX]+\s*(,\s*[A-H1-9IVX]+\s*)*(and|&)\s*[A-H1-9IVX]+(\s*(only|but not\s+[A-H1-9IVX]+))?|[1-9IVX]+(\s*,\s*[1-9IVX]+)+(\s*only)?|neither\s+[A-H]\s+nor\s+[A-H])\s*$", re.I)
+COMBO_RE = re.compile(r"^\s*((both\s+)?[A-H1-9IVX]+\s*(,\s*[A-H1-9IVX]+\s*)*,?\s*(and|&)\s*[A-H1-9IVX]+(\s*(only|but not\s+[A-H1-9IVX]+))?|[1-9IVX]+(\s*,\s*[1-9IVX]+)+(\s*only)?|neither\s+[A-H]\s+nor\s+[A-H])\s*$", re.I)
+ABBREV_RE = re.compile(r"\b(e\.g|i\.e|etc|vs|pp|p|Dr|Mr|Ms|Mrs|No|Fig|approx|cf)\.", re.I)
+# Words that come from lead-in templates (references/lead-in-bank.md); a key echoing these is not a clang cue.
+LEADIN_WORDS = {"strongly", "supported", "support", "data", "findings", "finding", "explanation", "explains", "likely",
+                "appropriate", "situation", "action", "step", "cause", "result", "results", "conclusion", "conclusions",
+                "evaluation", "interpretation", "describes", "best", "first", "next", "initial", "priority"}
 TRIADS = [
     ({"increase", "increased", "increases", "rise", "rises", "higher", "more", "greater"},
      {"decrease", "decreased", "decreases", "fall", "falls", "lower", "less", "fewer", "smaller"},
@@ -123,7 +128,7 @@ def lint_item(item: dict, bank: dict) -> list[Finding]:
     # --- ID-NONPARALLEL (candidates)
     if len(opts) >= 3:
         counts = [m.word_count(o.get("text", "")) for o in opts]
-        sentences = [len(re.findall(r"[.!?](\s|$)", o.get("text", "").strip())) for o in opts]
+        sentences = [len(re.findall(r"[.!?](\s|$)", ABBREV_RE.sub(lambda mm: mm.group(1), o.get("text", "").strip()))) for o in opts]
         if min(counts) > 0 and max(counts) / min(counts) >= 3:
             add("ID-NONPARALLEL", "warning", f"Option lengths vary widely ({min(counts)}–{max(counts)} words); check options share one grammatical form.")
         if len(set(s > 1 for s in sentences)) > 1:
@@ -174,8 +179,11 @@ def lint_item(item: dict, bank: dict) -> list[Finding]:
         k_len = m.word_count(key.get("text", ""))
         d_lens = [m.word_count(d.get("text", "")) for d in distractors]
         mean_d = sum(d_lens) / len(d_lens)
-        if mean_d > 0 and k_len >= 1.5 * mean_d and k_len > max(d_lens):
+        # Absolute margins avoid false alarms on short term lists ("Standard deviation" vs "Mean").
+        if mean_d > 0 and k_len >= 1.5 * mean_d and k_len > max(d_lens) and k_len - mean_d >= 3:
             add("TW-KEY-STANDS-OUT", "warning", f"Key is the longest option ({k_len} words vs mean {mean_d:.1f}); equalise and move explanation into feedback.", key.get("label"))
+        elif mean_d >= 6 and k_len <= 0.5 * mean_d and k_len < min(d_lens):
+            add("TW-KEY-STANDS-OUT", "warning", f"Key is conspicuously the shortest option ({k_len} words vs mean {mean_d:.1f}); a reverse length cue.", key.get("label"))
         if "(" in key.get("text", "") and not any("(" in d.get("text", "") for d in distractors):
             add("TW-KEY-STANDS-OUT", "warning", "Key is the only option with a parenthetical qualifier.", key.get("label"))
 
@@ -198,17 +206,21 @@ def lint_item(item: dict, bank: dict) -> list[Finding]:
         add("X-OPTION-COUNT", "info", "Two-option item: blind guessing succeeds 50% of the time. Tell the user.")
 
     # --- X-FEEDBACK-MISSING
+    placeholders = [o.get("label") for o in opts if PLACEHOLDER_FEEDBACK_RE.search(o.get("feedback") or "")]
+    if placeholders:
+        # One finding per item: converted originals often have no feedback at all, and per-option noise hides the real problems.
+        add("X-FEEDBACK-MISSING", "error", f"No real feedback on option(s) {', '.join(placeholders)} (placeholder from the original). Write feedback for each option.")
     for o in opts:
         fb = (o.get("feedback") or "").strip()
+        if o.get("label") in placeholders:
+            continue
         if not fb:
             add("X-FEEDBACK-MISSING", "error", "No feedback.", o.get("label"))
         elif THIN_FEEDBACK_RE.match(fb) or m.word_count(fb) < 8:
             add("X-FEEDBACK-MISSING", "error", "Feedback too thin; explain why this option is or isn't best.", o.get("label"))
-        elif PLACEHOLDER_FEEDBACK_RE.search(fb):
-            add("X-FEEDBACK-MISSING", "error", "Placeholder feedback; the original item had none. Write real feedback.", o.get("label"))
         if not o.get("correct") and not o.get("misconception"):
             add("X-FEEDBACK-MISSING", "info", "Distractor has no 'misconception' recorded.", o.get("label"))
-    fbs = [re.sub(r"\s+", " ", (o.get("feedback") or "").strip().lower()) for o in opts]
+    fbs = [re.sub(r"\s+", " ", (o.get("feedback") or "").strip().lower()) for o in opts if o.get("label") not in placeholders]
     dupes = {fb for fb in fbs if fb and fbs.count(fb) > 1}
     if dupes:
         labels = [o.get("label") for o, fb in zip(opts, fbs) if fb in dupes]
@@ -302,7 +314,7 @@ def _clang(item: dict, key: dict, distractors: list[dict], stem_text: str) -> li
     hits = []
     for w in set(m.content_words(key.get("text", ""))):
         s = m.stem_word(w)
-        if s in dis_stems:
+        if s in dis_stems or w in LEADIN_WORDS:
             continue
         if stem_counts.get(s) == 1:
             hits.append(w)

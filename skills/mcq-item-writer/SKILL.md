@@ -51,7 +51,7 @@ Collect a brief before writing. Calling projects (e-learning builds, course modu
 | Source content | none: write from general knowledge **and flag every factual claim for expert review** | Items must be correct. Grounding is what makes them trustworthy |
 | Learner level | ask; this one usually matters | Sets how typical or complex scenarios should be |
 | `purpose`: assessment / learning / both | infer it: ungraded practice or a knowledge check → `learning`; graded quiz or test → `both`; certification or placement → `assessment`. If unclear, `both` | Distractor policy and feedback release |
-| `assessment_type`: formative / summative | `formative` | Recall/application mix |
+| `assessment_type`: formative / summative | graded at any weight → `summative`; ungraded → `formative` | Recall/application mix |
 | Stakes | `low` | Rigour of review; integrity advice |
 | Number of items | 1–2 per objective | |
 | Options per item | 4 (key + 3 distractors) | User's choice. Mention 3 as an option when `purpose` is `learning` or testing time is tight (see `item-anatomy.md`). Stored as `bank.defaults.options_per_item` |
@@ -144,7 +144,7 @@ Treat findings as prompts for judgment, not verdicts. A flagged repeated word ma
 
 Use this when the user supplies existing items in any format (pasted text, a document, an LMS export).
 
-1. Convert each item to the schema as faithfully as possible, keeping the original wording in `notes`. Originals often won't validate (no feedback, open lead-ins). That's expected: for missing feedback write `(none in original)` so the linter reports it. Save it as `<name>-original.items.json`, lint it, and treat the findings as your diagnosis. The revised bank is a separate file that must validate.
+1. Convert each item to the schema as faithfully as possible, keeping the original wording in `notes`. Originals often won't validate (no feedback, open lead-ins). That's expected: for missing feedback write `(none in original): no feedback was written for this option.` so the linter reports it once per item. Save it as `<name>-original.items.json`, lint it, and treat the findings as your diagnosis. Put each item's diagnosis (flaw codes, source pages, what you changed) in the revised item's `notes`, so it appears in the review sheet. The revised bank is a separate file that must validate.
 2. **Cover-the-options check first:** read each stem, answer it, *then* look at the options. Note mismatches.
 3. Run the linter, then do the judgment checks from Write mode step 9.
 4. Write the revised items as a validated bank (feedback on every option) and generate the review sheet. In the sheet, record each item's flaws with their code and source page from `technical-flaws.md` (e.g. `[NBME p. 23]`) and what changed.
@@ -266,7 +266,7 @@ Audit: cover-the-options ✓ · lint: <none | codes> · SME check: <claims or "n
 
 **Canvas** (Classic Quizzes and New Quizzes):
 - Export with `--format canvas`. This builds a QTI 1.2 package and prints the import steps for both quiz engines. Pass the steps on to the user.
-- Per-answer feedback shows **after the learner submits**, depending on the quiz's result-view settings. So for Canvas, release feedback at the end of the attempt, and tell the user which setting controls it.
+- Per-answer feedback shows **after the learner submits**, depending on the quiz's result-view settings. So for Canvas, release feedback at the end of the attempt. This overrides the "immediate" default in `learning-and-feedback.md`. Point the user to the setting, noting that labels vary by Canvas version: in Classic Quizzes, the options to let students see their quiz responses (and, if wanted, the correct answers); in New Quizzes, the **Restrict student result view** settings.
 - Canvas ignores per-item shuffle. Spread key positions across A–D yourself (the linter checks this). Tell the user to turn on "Shuffle answers" unless the quiz has numeric or ordered options.
 - Recommend **1 attempt** for knowledge checks. Canvas practice quizzes often default to unlimited attempts with answers shown, which becomes try-until-correct.
 - Canvas multiple-choice questions can't give partial credit, so ordered-MC partial credit is lost. Mention it if ordered MC was used.

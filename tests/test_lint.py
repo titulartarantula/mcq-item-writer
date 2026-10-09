@@ -189,6 +189,36 @@ class FlawCodes(unittest.TestCase):
         self.assertIn("X-FEEDBACK-MISSING", self.mutate(lambda it: it["options"][2].update(
             feedback="(none in original) This option was converted from the draft without any feedback.")))
 
+    def test_combination_oxford_comma(self):
+        self.assertIn("ID-COMPLEX-STEM", self.mutate(lambda it: it["options"][3].update(text="1, 2, and 4")))
+
+    def test_reverse_length_cue(self):
+        def f(it):
+            it["options"][0]["text"] = "Shut it down"
+            for o, t in zip(it["options"][1:], ["Replace the failing fan while the rack keeps running for users",
+                                                 "Log a ticket for the next scheduled maintenance window this week",
+                                                 "Open the room door and wedge it to improve the airflow"]):
+                o["text"] = t
+        self.assertIn("TW-KEY-STANDS-OUT", self.mutate(f))
+
+    def test_short_term_list_not_flagged(self):
+        def f(it):
+            for o, t in zip(it["options"], ["Standard deviation", "Mean", "Median", "Mode"]):
+                o["text"] = t
+        self.assertNotIn("TW-KEY-STANDS-OUT", self.mutate(f))
+
+    def test_placeholder_reported_once_per_item(self):
+        it = base_item()
+        for o in it["options"]:
+            o["feedback"] = "(none in original): no feedback was written for this option."
+        findings, _ = lint_items.lint_bank(bank_with(it))
+        fb = [x for x in findings if x.code == "X-FEEDBACK-MISSING" and x.severity == "error"]
+        self.assertEqual(len(fb), 1, [x.message for x in fb])
+
+    def test_abbreviation_not_a_sentence_break(self):
+        self.assertNotIn("ID-NONPARALLEL", self.mutate(lambda it: it["options"][1].update(
+            text="Check the manual (pp. 44 to 45) first")))
+
     def test_cover_the_options_failed(self):
         self.assertIn("X-COVER-THE-OPTIONS", self.mutate(lambda it: it["audit"]["cover_the_options"].update(passed=False)))
 

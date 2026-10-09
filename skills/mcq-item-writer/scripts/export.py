@@ -494,6 +494,8 @@ def export_markdown(bank: dict, items: list[dict]) -> str:
         out += ["", f"Audit: cover-the-options {cto} · lint: {lint} · SME check: {claims}"]
         for w in audit.get("warnings", []):
             out.append(f"- ⚠ {w}")
+        if it.get("notes"):
+            out += ["", f"**Notes:** {it['notes']}"]
         out.append("")
     adm = bank.get("administration")
     if adm:

@@ -92,7 +92,7 @@ Default release settings this skill recommends:
 
 | Context | Release feedback |
 |---|---|
-| Short knowledge check or practice quiz | immediately after each item |
+| Short knowledge check or practice quiz | immediately after each item, where the platform allows it. Some platforms (e.g. Canvas) only show per-answer feedback after submission; there, use end of attempt |
 | Scenario or application items, practice test | at the end of the attempt, with review required (e.g. a short reflection or a gated next step) |
 | Graded online quiz | after the quiz **closes for everyone**, to protect item security [Xu p. 152] |
 | High-stakes summative | per policy; usually score report only, with feedback reserved for remediation |
