@@ -1,0 +1,20 @@
+# Source document: NBME permits redistribution only unmodified and with notices.
+# Keep it local; do not commit. Get it from https://www.nbme.org/educators/item-writing-guide
+*.pdf
+sources/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Eval workspaces
+evals/workspace/
+*-workspace/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

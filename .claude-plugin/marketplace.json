@@ -1,0 +1,18 @@
+{
+  "name": "mcq-item-writer",
+  "owner": {
+    "name": "Jordan Holmes",
+    "url": "https://github.com/titulartarantula"
+  },
+  "metadata": {
+    "description": "Assessment item-writing skills for Claude."
+  },
+  "plugins": [
+    {
+      "name": "mcq-item-writer",
+      "source": "./",
+      "description": "Write, review, and analyse one-best-answer multiple-choice questions using evidence-based item-writing principles, for any subject domain.",
+      "category": "education"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "mcq-item-writer",
+  "version": "0.1.0",
+  "description": "Write, review, and analyse one-best-answer multiple-choice questions using evidence-based item-writing principles (after the NBME Item-Writing Guide), for any subject domain.",
+  "author": {
+    "name": "Jordan Holmes",
+    "url": "https://github.com/titulartarantula"
+  },
+  "homepage": "https://github.com/titulartarantula/mcq-item-writer",
+  "repository": "https://github.com/titulartarantula/mcq-item-writer",
+  "license": "MIT AND CC-BY-NC-4.0",
+  "keywords": ["assessment", "mcq", "multiple-choice", "item-writing", "e-learning", "education", "psychometrics"]
+}
