@@ -525,7 +525,8 @@ def main(argv: list[str] | None = None) -> int:
     if isinstance(result, bytes):
         out.write_bytes(result)
     else:
-        out.write_text(result, encoding="utf-8", newline="\n")
+        with out.open("w", encoding="utf-8", newline="\n") as fh:  # Path.write_text(newline=) needs 3.10+
+            fh.write(result)
 
     print(f"Wrote {len(items)} item(s) to {out}")
     if drafts:
