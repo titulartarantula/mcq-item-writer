@@ -15,7 +15,7 @@ Source: NBME Item-Writing Guide, Ch 2, Ch 6, Appendix C [NBME pp. 11, 42–43, 8
 
 | Type | Guide name | Structure | Can the learner go back? |
 |---|---|---|---|
-| **Single item** | A-type | one stem, one lead-in, options (this skill defaults to 3) | n/a |
+| **Single item** | A-type | one stem, one lead-in, options (this skill defaults to 4; the user can choose) | n/a |
 | **Sequential set** | F-type | 2–3 items on a scenario that unfolds over time | **No.** Later items reveal earlier answers |
 | **Shared-stimulus set** | G-type | 2–3 items on the same content or stimulus | Yes |
 
@@ -50,6 +50,7 @@ Also:
 > A. Disconnect the employee's laptop from the network*
 > B. Restore the shared drive from last night's backup
 > C. Run a full antivirus scan on the laptop
+> D. Send a firm-wide warning about the phishing email
 
 **Update**
 > The laptop is disconnected. Twenty minutes later, two more employees on a different floor report the same file extensions on a different shared drive. Neither of them received the payroll email.
@@ -58,9 +59,10 @@ Also:
 > Which of the following is the most likely explanation for these new reports?
 > A. A second phishing email reached other employees
 > B. The malware spread before the laptop was isolated*
-> C. The two employees opened the README files
+> C. The backup system corrupted the file names
+> D. The two employees opened the README files
 
-Item 2 implies that Item 1's answer (isolate the laptop) was carried out, but it doesn't repeat that fact as a clue. It asks for a new inference. The options are clauses of similar length, so the key doesn't stand out. In delivery, each option also carries feedback. For example, option C's feedback would explain that the README files are ransom notes left by the malware, not its cause.
+Item 2 implies that Item 1's answer (isolate the laptop) was carried out, but it doesn't repeat that fact as a clue. It asks for a new inference. The options are clauses of similar length, so the key doesn't stand out. In delivery, each option also carries feedback. For example, option D's feedback would explain that the README files are ransom notes left by the malware, not its cause.
 
 ## Shared-stimulus sets (navigable)
 

@@ -1,0 +1,405 @@
+{
+  "schema_version": "0.1.0",
+  "bank": {
+    "title": "Example bank: IT security incident response and survey evaluation",
+    "description": "Worked examples showing a sequential set, an ordered (diagnostic) item, and a standard summative item. All content is original.",
+    "language": "en",
+    "created": "2026-10-09",
+    "generator": "mcq-item-writer 0.1.0",
+    "defaults": {
+      "purpose": "both",
+      "assessment_type": "formative",
+      "stakes": "low",
+      "learner_level": "first-year IT support / introductory statistics students",
+      "platform": "Moodle 4.x",
+      "options_per_item": 4
+    },
+    "source_materials": [
+      {
+        "id": "SRC-IR",
+        "title": "Module 3: First response to suspected malware",
+        "location": "course-notes/module-3.pdf"
+      },
+      {
+        "id": "SRC-STATS",
+        "title": "Unit 2: Sampling and bias",
+        "location": "course-notes/unit-2.pdf"
+      }
+    ]
+  },
+  "items": [
+    {
+      "id": "IR-RANSOM-01",
+      "version": 1,
+      "status": "draft",
+      "format": "one-best-answer",
+      "objective": {
+        "id": "IR3.1",
+        "text": "Choose the first containment action for a suspected malware infection."
+      },
+      "testing_point": "Recognises signs of active ransomware and prioritises isolating the affected machine over cleanup or recovery.",
+      "content_area": "Incident response",
+      "task": "choose-action",
+      "cognitive_process": "apply",
+      "cognitive_level": "application",
+      "purpose": "both",
+      "assessment_type": "formative",
+      "difficulty_target": 0.72,
+      "set_id": "SET-RANSOM",
+      "set_position": 1,
+      "stem": {
+        "scenario": null,
+        "data_table": null,
+        "lead_in": "Which of the following is the most appropriate immediate action?"
+      },
+      "options": [
+        {
+          "label": "A",
+          "text": "Disconnect the employee's laptop from the network",
+          "correct": true,
+          "feedback": "Correct. The changed file extensions and README files point to ransomware that is still running. Isolating the laptop first stops it from encrypting more of the shared drive or spreading to other machines. Recovery comes after containment.",
+          "misconception": null
+        },
+        {
+          "label": "B",
+          "text": "Restore the shared drive from last night's backup",
+          "correct": false,
+          "feedback": "Restoring is part of recovery, but doing it now is premature. While the infected laptop is still connected, the malware can encrypt the restored files too. Contain the threat first, then restore.",
+          "misconception": "Treats recovery as the first step, before containment."
+        },
+        {
+          "label": "C",
+          "text": "Run a full antivirus scan on the laptop",
+          "correct": false,
+          "feedback": "A scan may help later, but it takes time while the malware keeps working, and the endpoint tool has already missed this threat. Isolation stops the damage immediately; investigation and cleanup follow.",
+          "misconception": "Assumes detection tools will resolve an active incident faster than containment."
+        },
+        {
+          "label": "D",
+          "text": "Send a firm-wide warning about the phishing email",
+          "correct": false,
+          "feedback": "Warning staff is worthwhile, but it doesn't stop the encryption already happening on this laptop and the shared drive. Contain the active infection first, then warn others.",
+          "misconception": "Prioritises preventing new infections over containing the current one."
+        }
+      ],
+      "shuffle": true,
+      "people": [
+        {
+          "role": "help-desk analyst",
+          "inclusion_reason": "none-stated"
+        },
+        {
+          "role": "employee",
+          "inclusion_reason": "none-stated"
+        }
+      ],
+      "references": [
+        {
+          "source_id": "SRC-IR",
+          "locator": "Section 3.2, 'Contain before you clean'"
+        }
+      ],
+      "sme_review": {
+        "required": false,
+        "claims_to_verify": []
+      },
+      "audit": {
+        "cover_the_options": {
+          "passed": true,
+          "stem_only_answer": "Isolate the infected laptop from the network.",
+          "notes": "Stem-only answer matches key A."
+        },
+        "lint": [],
+        "warnings": []
+      },
+      "tags": [
+        "ransomware",
+        "containment"
+      ]
+    },
+    {
+      "id": "IR-RANSOM-02",
+      "version": 1,
+      "status": "draft",
+      "format": "one-best-answer",
+      "objective": {
+        "id": "IR3.2",
+        "text": "Interpret new evidence during an incident to judge whether it has spread."
+      },
+      "testing_point": "Infers lateral spread from new reports on other machines by users who did not receive the phishing email.",
+      "content_area": "Incident response",
+      "task": "explain",
+      "cognitive_process": "analyze",
+      "cognitive_level": "application",
+      "purpose": "both",
+      "assessment_type": "formative",
+      "difficulty_target": 0.72,
+      "set_id": "SET-RANSOM",
+      "set_position": 2,
+      "stem": {
+        "scenario": null,
+        "data_table": null,
+        "lead_in": "Which of the following is the most likely explanation for these new reports?"
+      },
+      "options": [
+        {
+          "label": "A",
+          "text": "A second phishing email reached other employees",
+          "correct": false,
+          "feedback": "A plausible thought, but the update says neither employee received the payroll email, and nothing suggests a second campaign. The evidence points to spread from the first infection.",
+          "misconception": "Assumes each infection needs its own entry point."
+        },
+        {
+          "label": "B",
+          "text": "The malware spread before the laptop was isolated",
+          "correct": true,
+          "feedback": "Correct. About 25 minutes passed between the click and isolation. Ransomware often moves across shared drives and the network in that time, which is why containment speed matters and why the next step is to check other systems.",
+          "misconception": null
+        },
+        {
+          "label": "C",
+          "text": "The backup system corrupted the file names",
+          "correct": false,
+          "feedback": "Backup faults don't rename files with a new extension and leave a README in every folder. The identical symptoms on another drive match the original malware, not a backup problem.",
+          "misconception": "Attributes the symptoms to an unrelated system fault."
+        },
+        {
+          "label": "D",
+          "text": "The two employees opened the README files",
+          "correct": false,
+          "feedback": "The README files are the ransom notes the malware leaves after encrypting files. They are a symptom, not a cause, so opening them doesn't spread the infection.",
+          "misconception": "Confuses the ransom note (an effect) with the infection mechanism."
+        }
+      ],
+      "shuffle": true,
+      "references": [
+        {
+          "source_id": "SRC-IR",
+          "locator": "Section 3.4, 'Lateral movement'"
+        }
+      ],
+      "audit": {
+        "cover_the_options": {
+          "passed": true,
+          "stem_only_answer": "It spread from the first laptop before it was isolated.",
+          "notes": ""
+        },
+        "lint": [],
+        "warnings": []
+      },
+      "tags": [
+        "ransomware",
+        "lateral-movement"
+      ]
+    },
+    {
+      "id": "STATS-BIAS-01",
+      "version": 1,
+      "status": "draft",
+      "format": "ordered-mc",
+      "objective": {
+        "id": "ST2.4",
+        "text": "Evaluate whether a survey estimate is biased by how respondents were selected."
+      },
+      "testing_point": "Recognises self-selection bias and which direction it pushes the estimate, even when the sample is large.",
+      "content_area": "Sampling and bias",
+      "task": "interpret-data",
+      "cognitive_process": "evaluate",
+      "cognitive_level": "application",
+      "purpose": "learning",
+      "assessment_type": "formative",
+      "difficulty_target": 0.77,
+      "stem": {
+        "scenario": "A city council surveys residents about a proposed bike lane by posting a link on a local cycling club's social-media page. 2,400 people respond, and 81% support the lane.",
+        "data_table": null,
+        "lead_in": "Which of the following is the best evaluation of the 81% figure?"
+      },
+      "options": [
+        {
+          "label": "A",
+          "text": "It is trustworthy because the sample is large",
+          "correct": false,
+          "feedback": "A large sample reduces random error, but it can't fix who is in the sample. Here, everyone saw the link on a cycling club's page. Ask how respondents were chosen, not just how many there are.",
+          "misconception": "Believes sample size alone guarantees accuracy.",
+          "level": 1,
+          "weight": 0
+        },
+        {
+          "label": "B",
+          "text": "It is accurate within normal random sampling error",
+          "correct": false,
+          "feedback": "Random sampling error is real, but it assumes respondents were picked at random. These respondents chose to respond after seeing a cycling club's post, so the error has a direction, not just a margin.",
+          "misconception": "Knows estimates vary but attributes all error to chance, missing selection bias.",
+          "level": 2,
+          "weight": 0.5
+        },
+        {
+          "label": "C",
+          "text": "It likely overstates support because respondents selected themselves",
+          "correct": true,
+          "feedback": "Correct. People who follow a cycling club and choose to answer are more likely to support bike lanes, so the 81% probably overstates support among all residents. A large sample doesn't remove this bias.",
+          "misconception": null,
+          "level": 3,
+          "weight": 1
+        }
+      ],
+      "shuffle": true,
+      "ordered_mc": {
+        "progression": [
+          {
+            "level": 1,
+            "description": "Bigger sample means a more accurate estimate."
+          },
+          {
+            "level": 2,
+            "description": "Estimates vary by chance (sampling error), but bias isn't considered."
+          },
+          {
+            "level": 3,
+            "description": "How respondents were selected can bias the estimate in a predictable direction."
+          }
+        ],
+        "confirmed_by_user": true,
+        "scoring": "partial-credit"
+      },
+      "people": [
+        {
+          "role": "city council",
+          "inclusion_reason": "none-stated"
+        }
+      ],
+      "references": [
+        {
+          "source_id": "SRC-STATS",
+          "locator": "Unit 2.3, 'Voluntary response samples'"
+        }
+      ],
+      "audit": {
+        "cover_the_options": {
+          "passed": true,
+          "stem_only_answer": "It's probably biased upward because cycling-club followers chose to respond.",
+          "notes": "Options parallel and 8 words each, so the key doesn't stand out."
+        },
+        "lint": [],
+        "warnings": []
+      },
+      "tags": [
+        "sampling",
+        "bias",
+        "diagnostic"
+      ],
+      "option_count_reason": "ordered MC: 3 levels in the confirmed progression"
+    },
+    {
+      "id": "PM-SCHED-01",
+      "version": 1,
+      "status": "draft",
+      "format": "one-best-answer",
+      "objective": {
+        "id": "PM2.3",
+        "text": "Identify the main cause of schedule variance from a project status report."
+      },
+      "testing_point": "Distinguishes uncontrolled scope change from staffing and estimation problems as the main driver of schedule variance.",
+      "content_area": "Scheduling",
+      "task": "interpret-data",
+      "cognitive_process": "analyze",
+      "cognitive_level": "application",
+      "purpose": "assessment",
+      "assessment_type": "summative",
+      "learner_level": "first-year undergraduate project management",
+      "difficulty_target": 0.72,
+      "stem": {
+        "scenario": "A project manager reviews the week-14 status report for a 20-week software project.",
+        "data_table": "| Measure | Status |\n|---|---|\n| Budget | 78% spent (65% planned) |\n| Milestones | 3 of 7 complete (5 planned) |\n| Approved change requests | 11 (2 expected at baseline) |\n| Team | 1 senior developer left in week 10; replaced in week 11 |\n| Sponsor note | \"Need the reporting module added before go-live.\" |",
+        "lead_in": "Which of the following is the most likely main cause of the schedule variance?"
+      },
+      "options": [
+        {
+          "label": "A",
+          "text": "Loss of a senior developer",
+          "correct": false,
+          "feedback": "The departure cost some time, but the developer was replaced within a week. That can't explain a two-milestone slip on its own, especially against eleven approved changes.",
+          "misconception": "Overweights a memorable event over the pattern in the data."
+        },
+        {
+          "label": "B",
+          "text": "Unrealistic initial estimates",
+          "correct": false,
+          "feedback": "Possible on many projects, but nothing in the report suggests the original estimates were wrong. The striking figure is eleven approved changes against two expected.",
+          "misconception": "Defaults to a generic cause without evidence in the scenario."
+        },
+        {
+          "label": "C",
+          "text": "Poor communication with the sponsor",
+          "correct": false,
+          "feedback": "Communication may need work, since the sponsor is still asking for features. But the measurable driver in the report is the volume of approved changes, not a failure to communicate.",
+          "misconception": "Picks a contributing factor instead of the main driver shown in the data."
+        },
+        {
+          "label": "D",
+          "text": "Uncontrolled growth in project scope",
+          "correct": true,
+          "feedback": "Correct. Eleven approved change requests against two expected, plus the sponsor still adding features, point to scope creep. More work is being added than the schedule allows for, which also explains the budget overrun.",
+          "misconception": null
+        }
+      ],
+      "shuffle": true,
+      "people": [
+        {
+          "role": "project manager",
+          "inclusion_reason": "none-stated"
+        },
+        {
+          "role": "sponsor",
+          "inclusion_reason": "none-stated"
+        }
+      ],
+      "audit": {
+        "cover_the_options": {
+          "passed": true,
+          "stem_only_answer": "Scope creep from all the approved change requests.",
+          "notes": ""
+        },
+        "lint": [],
+        "warnings": []
+      },
+      "tags": [
+        "scope",
+        "schedule"
+      ]
+    }
+  ],
+  "sets": [
+    {
+      "id": "SET-RANSOM",
+      "type": "sequential",
+      "navigation": "locked",
+      "title": "Ransomware first response",
+      "opening_scenario": "A help-desk analyst at a 200-person accounting firm receives a call at 09:40 from an employee who cannot open files on a shared drive. File names now end in \".lck\", and a README text file has appeared in each folder. The employee says they clicked a link in an email that appeared to come from the payroll provider at about 09:15. The employee's laptop is still switched on at their desk.",
+      "updates": [
+        {
+          "after_item": "IR-RANSOM-01",
+          "text": "The laptop is disconnected. Twenty minutes later, two more employees on a different floor report the same file extensions on a different shared drive. Neither of them received the payroll email."
+        }
+      ],
+      "item_ids": [
+        "IR-RANSOM-01",
+        "IR-RANSOM-02"
+      ]
+    }
+  ],
+  "administration": {
+    "tell_learners": "Most questions describe a workplace situation and ask what you would do or conclude. Each question has one best answer.",
+    "question_order": "course-sequence",
+    "feedback_release": "end-of-attempt",
+    "attempts": 1,
+    "integrity": [
+      "Low-stakes practice: no special measures."
+    ],
+    "scoring": "partial-credit-ordered",
+    "after_delivery": [
+      "Run item analysis; replace any distractor chosen by fewer than 5% of learners.",
+      "Invite learner comments on unclear items."
+    ]
+  }
+}

@@ -61,7 +61,7 @@ See `cognitive-level.md` for when a recall item is acceptable.
 
 **How to apply:**
 1. Write the key first.
-2. Generate **two** distractors (default 3 options; see `item-anatomy.md`) that are **the same kind of thing** as the key and that a partly informed learner might choose:
+2. Generate distractors to fill the bank's option count (default 4 options, so **three** distractors; see `item-anatomy.md`) that are **the same kind of thing** as the key and that a partly informed learner might choose:
    - common misconceptions and typical errors at this learner level. Real learner errors from past tests or class work are the best source [Xu p. 150]
    - true statements that don't answer the question asked [Butler p. 327]
    - answers that would be right in a slightly different scenario

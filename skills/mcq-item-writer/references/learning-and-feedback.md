@@ -102,7 +102,7 @@ Default release settings this skill recommends:
 NBME flags items outside p = .30–.95 [NBME p. 26]. A **target** is more useful when writing.
 
 - Discrimination tends to peak when item difficulty is **somewhat easier than halfway between chance and 100%** (Lord, 1952, via [Butler p. 328]).
-- For the **3-option** default, that is about **p ≈ .77**: roughly three-quarters of attempts correct [Butler p. 328]. (Halfway point = (1/k + 1) / 2, where k is the number of options. Aim a little above it.)
+- The halfway point is (1/k + 1) / 2, where k is the number of options. For **3 options**, Butler gives **p ≈ .77** [Butler p. 328]. For the **4-option** default the halfway point is .625, so aim around **.70–.75**. That range is our approximation of Lord's rule, not a published figure. In both cases the target works out to roughly 70–77% of attempts correct.
 - The same target suits learning. Learners benefit when they succeed most of the time, but items that are too easy let them succeed without thinking [Butler pp. 328–329].
 - **Productive difficulty** comes from the thinking the objective requires: options that are conceptually close, or distractors built from real misconceptions. **Unproductive difficulty** comes from tricks, ambiguity, and technical flaws (see `technical-flaws.md`) [Butler pp. 328–329].
 - When learning is the goal and items are challenging, **support the learner and give feedback** [Butler p. 329].

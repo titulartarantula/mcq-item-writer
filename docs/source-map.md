@@ -75,7 +75,7 @@ How each section of the NBME Item-Writing Guide (6th ed., Oct 2024 printing) and
 
 Labelled "Beyond the guide" or cited to Butler or Xu where they appear:
 - `X-AOTA`, `X-KEY-POSITION`, `X-OPTION-COUNT`, `X-FEEDBACK-MISSING` checks
-- 3-option default, which departs from NBME's 4–5 convention (`item-anatomy.md`)
+- configurable option count (default 4; 3 offered as a research-backed alternative) (`item-anatomy.md`)
 - required per-option feedback and a purpose-based distractor policy (`learning-and-feedback.md`)
 - ordered MC, offered to the user (`ordered-mc.md`)
 - test administration guidance (`administration.md`)

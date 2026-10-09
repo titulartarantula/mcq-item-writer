@@ -1,0 +1,390 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/titulartarantula/mcq-item-writer/blob/main/skills/mcq-item-writer/assets/item.schema.json",
+  "title": "MCQ item bank",
+  "description": "Canonical output of the mcq-item-writer skill. Items, sets, and administration notes. Exporters (Moodle, QTI, GIFT, CSV, H5P) read this format.",
+  "type": "object",
+  "required": ["schema_version", "bank", "items"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "0.1.0" },
+    "bank": { "$ref": "#/$defs/bank" },
+    "items": { "type": "array", "items": { "$ref": "#/$defs/item" } },
+    "sets": { "type": "array", "items": { "$ref": "#/$defs/set" } },
+    "administration": { "$ref": "#/$defs/administration" },
+    "blueprint": { "type": "object", "description": "Optional blueprint (see references/blueprint.md)." }
+  },
+
+  "$defs": {
+    "purpose": {
+      "enum": ["assessment", "learning", "both"],
+      "description": "Drives distractor policy and feedback release (references/learning-and-feedback.md)."
+    },
+    "assessment_type": {
+      "enum": ["formative", "summative"],
+      "description": "Drives the recall/application mix (references/cognitive-level.md)."
+    },
+
+    "bank": {
+      "type": "object",
+      "required": ["title", "defaults"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "language": { "type": "string", "default": "en" },
+        "created": { "type": "string", "format": "date" },
+        "generator": { "type": "string", "description": "e.g. 'mcq-item-writer 0.1.0'" },
+        "defaults": {
+          "type": "object",
+          "required": ["purpose", "assessment_type", "learner_level"],
+          "additionalProperties": false,
+          "properties": {
+            "purpose": { "$ref": "#/$defs/purpose" },
+            "assessment_type": { "$ref": "#/$defs/assessment_type" },
+            "stakes": { "enum": ["low", "medium", "high"] },
+            "learner_level": { "type": "string", "minLength": 1 },
+            "options_per_item": { "type": "integer", "minimum": 2, "maximum": 8, "default": 4, "description": "Target option count for the bank (key + distractors). Default 4; the user may choose another (references/item-anatomy.md)." },
+            "platform": { "type": "string", "description": "Target LMS / authoring tool, e.g. 'Moodle 4.x', 'Canvas New Quizzes', 'Articulate Rise'." }
+          }
+        },
+        "source_materials": {
+          "type": "array",
+          "description": "Content the items are grounded in.",
+          "items": {
+            "type": "object",
+            "required": ["id", "title"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" },
+              "location": { "type": "string", "description": "Path, URL, or citation." }
+            }
+          }
+        }
+      }
+    },
+
+    "option": {
+      "type": "object",
+      "required": ["label", "text", "correct", "feedback"],
+      "additionalProperties": false,
+      "properties": {
+        "label": { "type": "string", "pattern": "^[A-H]$" },
+        "text": { "type": "string", "minLength": 1 },
+        "correct": { "type": "boolean" },
+        "feedback": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Why this option is or is not the best answer. Required for every option, including the key (references/learning-and-feedback.md)."
+        },
+        "misconception": {
+          "type": ["string", "null"],
+          "description": "For distractors: the error or misconception this option represents. Null for the key."
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Ordered MC only: the level of understanding this option represents (1 = most naive)."
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Optional partial credit (ordered MC, formative only). Key = 1."
+        }
+      }
+    },
+
+    "person": {
+      "type": "object",
+      "description": "A person in the scenario, recorded so representation can be reviewed across the bank (references/people-in-scenarios.md).",
+      "required": ["role", "inclusion_reason"],
+      "additionalProperties": false,
+      "properties": {
+        "role": { "type": "string" },
+        "characteristics": {
+          "type": "object",
+          "description": "Only characteristics actually stated in the item. Use 'unspecified' where deliberately withheld.",
+          "additionalProperties": { "type": "string" }
+        },
+        "self_identified": { "type": "boolean" },
+        "inclusion_reason": { "enum": ["relevant", "necessary-context", "representativeness", "none-stated"] }
+      }
+    },
+
+    "lint_finding": {
+      "type": "object",
+      "required": ["code", "severity", "message"],
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^(ID|TW|X|SCHEMA)-[A-Z-]+$",
+          "description": "Flaw code from references/technical-flaws.md."
+        },
+        "severity": { "enum": ["error", "warning", "info"] },
+        "message": { "type": "string" },
+        "option": { "type": "string", "pattern": "^[A-H]$" },
+        "resolved": { "type": "boolean" },
+        "resolution": { "type": "string" }
+      }
+    },
+
+    "item": {
+      "type": "object",
+      "required": [
+        "id", "status", "format", "objective", "testing_point", "task",
+        "cognitive_process", "cognitive_level", "purpose", "assessment_type",
+        "stem", "options", "shuffle", "audit"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" },
+        "version": { "type": "integer", "minimum": 1, "default": 1 },
+        "status": { "enum": ["draft", "reviewed", "approved", "retired"] },
+        "format": {
+          "enum": ["one-best-answer", "ordered-mc", "multiple-response"],
+          "description": "multiple-response is discouraged (references/formats.md) and must carry a warning in audit.warnings."
+        },
+        "objective": {
+          "type": "object",
+          "required": ["text"],
+          "additionalProperties": false,
+          "properties": {
+            "id": { "type": "string" },
+            "text": { "type": "string", "minLength": 1 }
+          }
+        },
+        "testing_point": { "type": "string", "minLength": 1, "description": "One sentence: what a correct answer shows the learner can do." },
+        "content_area": { "type": "string" },
+        "task": {
+          "enum": [
+            "explain", "locate", "gather-information", "predict-observation", "interpret-data",
+            "classify", "predict-outcome", "prevent", "choose-action", "monitor",
+            "communicate", "professional-judgment", "systems-safety", "quantitative-reasoning", "recall"
+          ],
+          "description": "Lead-in category from references/lead-in-bank.md (plus 'recall')."
+        },
+        "cognitive_process": { "enum": ["remember", "understand", "apply", "analyze", "evaluate"] },
+        "cognitive_level": { "enum": ["recall", "application"] },
+        "cognitive_level_reason": { "type": "string", "description": "Required when a summative item is recall-level." },
+        "purpose": { "$ref": "#/$defs/purpose" },
+        "assessment_type": { "$ref": "#/$defs/assessment_type" },
+        "learner_level": { "type": "string" },
+        "difficulty_target": { "type": "number", "minimum": 0, "maximum": 1, "description": "Expected proportion correct: about 0.70–0.75 for 4 options, about 0.77 for 3 (references/learning-and-feedback.md)." },
+
+        "stem": {
+          "type": "object",
+          "required": ["lead_in"],
+          "additionalProperties": false,
+          "properties": {
+            "scenario": { "type": ["string", "null"], "description": "Prose scenario in template order (references/scenarios.md). Null only for recall items." },
+            "data_table": { "type": ["string", "null"], "description": "Optional Markdown table or structured block shown with the scenario." },
+            "lead_in": { "type": "string", "pattern": "\\?\\s*$", "description": "One closed question ending in '?'." }
+          }
+        },
+        "media": {
+          "type": "object",
+          "required": ["type", "purpose", "depicts", "alt_text"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "enum": ["image", "video", "audio", "interactive"] },
+            "purpose": { "type": "string" },
+            "depicts": { "type": "string" },
+            "must_not_show": { "type": "array", "items": { "type": "string" } },
+            "alt_text": { "type": "string", "description": "Non-cueing description (references/media.md)." },
+            "captions_required": { "type": "boolean" },
+            "notes": { "type": "string" },
+            "file": { "type": "string", "description": "Path or URL once the asset exists." }
+          }
+        },
+
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 8,
+          "items": { "$ref": "#/$defs/option" }
+        },
+        "option_count_reason": { "type": "string", "description": "Required when the option count differs from bank.defaults.options_per_item (checked by the linter as X-OPTION-COUNT)." },
+        "shuffle": { "type": "boolean", "description": "false when options have a natural order (numeric, sequential, scale) — references/administration.md." },
+
+        "ordered_mc": {
+          "type": "object",
+          "required": ["progression", "confirmed_by_user"],
+          "additionalProperties": false,
+          "properties": {
+            "progression": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "type": "object",
+                "required": ["level", "description"],
+                "additionalProperties": false,
+                "properties": {
+                  "level": { "type": "integer", "minimum": 1 },
+                  "description": { "type": "string" }
+                }
+              }
+            },
+            "confirmed_by_user": { "type": "boolean" },
+            "scoring": { "enum": ["right-wrong", "partial-credit"], "default": "right-wrong" }
+          }
+        },
+
+        "set_id": { "type": "string" },
+        "set_position": { "type": "integer", "minimum": 1 },
+        "people": { "type": "array", "items": { "$ref": "#/$defs/person" } },
+        "references": {
+          "type": "array",
+          "description": "Where in the source material the key and feedback are supported.",
+          "items": {
+            "type": "object",
+            "required": ["source_id", "locator"],
+            "additionalProperties": false,
+            "properties": {
+              "source_id": { "type": "string" },
+              "locator": { "type": "string", "description": "Page, section, slide, timestamp..." }
+            }
+          }
+        },
+        "sme_review": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "required": { "type": "boolean" },
+            "claims_to_verify": { "type": "array", "items": { "type": "string" } },
+            "reviewer": { "type": "string" },
+            "date": { "type": "string", "format": "date" },
+            "outcome": { "enum": ["pending", "approved", "revise", "reject"] }
+          }
+        },
+
+        "audit": {
+          "type": "object",
+          "required": ["cover_the_options"],
+          "additionalProperties": false,
+          "properties": {
+            "cover_the_options": {
+              "type": "object",
+              "required": ["passed"],
+              "additionalProperties": false,
+              "properties": {
+                "passed": { "type": "boolean" },
+                "stem_only_answer": { "type": "string", "description": "The answer reached from the stem alone, before reading the options." },
+                "notes": { "type": "string" }
+              }
+            },
+            "lint": { "type": "array", "items": { "$ref": "#/$defs/lint_finding" } },
+            "warnings": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+
+        "exposure": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "first_used": { "type": "string", "format": "date" },
+            "times_used": { "type": "integer", "minimum": 0 },
+            "forms": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "stats": {
+          "type": "object",
+          "description": "Filled in by Analyze mode (references/item-analysis.md).",
+          "additionalProperties": false,
+          "properties": {
+            "n": { "type": "integer", "minimum": 0 },
+            "p": { "type": "number", "minimum": 0, "maximum": 1 },
+            "discrimination": { "type": "number", "minimum": -1, "maximum": 1 },
+            "option_proportions": { "type": "object", "additionalProperties": { "type": "number" } },
+            "flags": { "type": "array", "items": { "type": "string" } },
+            "administered": { "type": "string", "format": "date" }
+          }
+        },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "string" }
+      },
+
+      "allOf": [
+        {
+          "if": { "properties": { "format": { "enum": ["one-best-answer", "ordered-mc"] } } },
+          "then": {
+            "properties": {
+              "options": {
+                "contains": { "type": "object", "properties": { "correct": { "const": true } }, "required": ["correct"] },
+                "minContains": 1,
+                "maxContains": 1
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "format": { "const": "ordered-mc" } } },
+          "then": {
+            "required": ["ordered_mc"],
+            "properties": { "options": { "items": { "required": ["level"] } } }
+          }
+        },
+        {
+          "if": { "properties": { "format": { "const": "multiple-response" } } },
+          "then": { "properties": { "audit": { "required": ["warnings"] } } }
+        },
+        {
+          "if": {
+            "properties": { "assessment_type": { "const": "summative" }, "cognitive_level": { "const": "recall" } },
+            "required": ["assessment_type", "cognitive_level"]
+          },
+          "then": { "required": ["cognitive_level_reason"] }
+        }
+      ]
+    },
+
+    "set": {
+      "type": "object",
+      "required": ["id", "type", "navigation", "item_ids"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "enum": ["sequential", "shared-stimulus", "extended-matching"] },
+        "navigation": { "enum": ["locked", "free"], "description": "Sequential sets must be locked (references/item-sets.md)." },
+        "title": { "type": "string" },
+        "opening_scenario": { "type": "string" },
+        "stimulus": { "type": "string", "description": "Shared stimulus for shared-stimulus sets." },
+        "updates": {
+          "type": "array",
+          "description": "Sequential sets: text revealed after an item, before the next.",
+          "items": {
+            "type": "object",
+            "required": ["after_item", "text"],
+            "additionalProperties": false,
+            "properties": {
+              "after_item": { "type": "string" },
+              "text": { "type": "string" }
+            }
+          }
+        },
+        "item_ids": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+      },
+      "allOf": [
+        { "if": { "properties": { "type": { "const": "sequential" } } }, "then": { "properties": { "navigation": { "const": "locked" } } } }
+      ]
+    },
+
+    "administration": {
+      "type": "object",
+      "description": "Administration note (references/administration.md).",
+      "additionalProperties": false,
+      "properties": {
+        "tell_learners": { "type": "string" },
+        "question_order": { "enum": ["course-sequence", "randomised-within-sections", "fixed", "easy-to-hard"] },
+        "feedback_release": { "enum": ["immediate", "end-of-attempt", "after-close", "score-only"] },
+        "attempts": { "type": "integer", "minimum": 1, "default": 1 },
+        "integrity": { "type": "array", "items": { "type": "string" } },
+        "scoring": { "enum": ["number-right", "partial-credit-ordered", "formula"] },
+        "after_delivery": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

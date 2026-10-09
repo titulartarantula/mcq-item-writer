@@ -2,9 +2,9 @@
 
 A Claude skill for writing, reviewing, and analysing **one-best-answer multiple-choice questions** in any subject. It is built on the evidence-based principles in the NBME Item-Writing Guide (Billings et al., *Constructing Written Test Questions for the Health Sciences*), generalised beyond health care for e-learning, course assessment, and training programmes. Research on learning from tests adds to it (Butler, 2018; Xu, Kauer & Tupy, 2016), so items work for **learning** as well as measurement.
 
-Defaults: 3 options per item, explanatory feedback on every option, and optional diagnostic (ordered) items.
+Defaults: 4 options per item (configurable; 3 is a research-backed alternative), explanatory feedback on every option, and optional diagnostic (ordered) items.
 
-> **Status: in development (v0.1.0-dev).** The reference content is complete. The workflow (`SKILL.md`), linter, exporters, and evals are in progress. See the roadmap below.
+> **Status: in development (v0.1.0-dev).** The reference content, item schema, and `SKILL.md` workflow are complete. The linter, exporters, analysis script, and evals are in progress, and until they land the skill falls back to manual checks. See the roadmap below.
 
 ## What it will do
 
@@ -31,10 +31,10 @@ In Claude Code:
 ```
 .claude-plugin/            plugin + marketplace manifests
 skills/mcq-item-writer/
-  SKILL.md                 workflow (in progress)
+  SKILL.md                 workflow: intake, Write / Review / Analyze / Blueprint modes
   references/              item-writing principles, loaded on demand
   scripts/                 linter, exporters, response analysis (in progress)
-  assets/                  item JSON schema (in progress)
+  assets/                  item.schema.json + example-bank.json
 docs/source-map.md         guide section → reference file coverage
 evals/                     test items and generation tasks (in progress)
 ```
@@ -44,7 +44,7 @@ evals/                     test items and generation tasks (in progress)
 - [x] Phase 1: repo, licensing, plugin manifests
 - [x] Phase 2: reference files distilled from the guide (12 files, page-cited, original examples)
 - [x] Phase 2b: supporting research added (Butler 2018; Xu et al. 2016): learning and feedback, ordered MC, administration
-- [ ] Phase 3: item JSON schema and `SKILL.md` workflow
+- [x] Phase 3: item JSON schema, worked example bank, and `SKILL.md` workflow
 - [ ] Phase 4: `lint_items.py`, exporters, `analyze_responses.py`
 - [ ] Phase 5: evals across several unrelated domains
 - [ ] Phase 6: v0.1.0 release

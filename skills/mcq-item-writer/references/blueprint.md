@@ -60,7 +60,7 @@ Steps:
 - Classroom summative tests: as many as testing time allows. Longer tests are more reliable.
 - Formative checks: short is fine. Each item gives feedback, but the total score is not reliable enough for decisions about individuals.
 
-> Beyond the guide: a common planning figure is about 1 minute per short recall item and 1.5–2 minutes per scenario-based application item. Three-option items take about 5 seconds less each than four- or five-option items, so the 3-option default fits more items into the same time [Xu p. 153].
+> Beyond the guide: a common planning figure is about 1 minute per short recall item and 1.5–2 minutes per scenario-based application item. Three-option items take about 5 seconds less each than four- or five-option items, so choosing 3 options fits more items into the same time [Xu p. 153].
 
 ## Fairness check
 

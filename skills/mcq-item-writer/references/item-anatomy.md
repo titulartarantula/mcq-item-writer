@@ -30,10 +30,11 @@ Every multiple-choice format belongs to one of two families [NBME p. 11]:
 │ Scenario (vignette): the situation, data, and context.       │
 │ Lead-in: one closed question about the scenario.             │
 └──────────────────────────────────────────────────────────────┘
-  OPTION SET (default 3)                    FEEDBACK (every option)
+  OPTION SET (default 4)                    FEEDBACK (every option)
    A. distractor                     →  why it is less correct; the misconception
    B. key  ← the single best answer  →  why it is best, using the scenario's evidence
    C. distractor                     →  why it is less correct; the misconception
+   D. distractor                     →  why it is less correct; the misconception
 ```
 
 - **Stem**: everything before the options. Usually a scenario followed by a lead-in [NBME p. 12].
@@ -87,6 +88,7 @@ The options cover cause, geography, affected sectors, and duration. They can't b
 > A. Decrease in deposit liabilities
 > B. Increase in loan-loss provisions*
 > C. Increase in retained earnings
+> D. Increase in cash reserves
 
 Every option is now a balance-sheet effect, and the options can be ranked from least to most likely.
 
@@ -98,17 +100,26 @@ The test: content experts would all agree on which option is best, even if they 
 
 ## How many options
 
-**This skill's default: 3 options (the key plus 2 plausible distractors), for every purpose.**
+**This skill's default: 4 options (the key plus 3 plausible distractors). The user can choose a different number.** The choice is stored as `bank.defaults.options_per_item`.
 
 The sources differ on this:
-- **NBME convention:** one key plus three to seven distractors, so most published items have four or five options [NBME p. 12].
-- **Research:** a meta-analysis of 80 years of studies (Rodriguez, 2005) concluded that **three options** give the best balance of psychometric quality and testing time. A classroom study found no loss of reliability or difficulty when items were cut from five options to three [Butler p. 327; Xu pp. 152–153].
+- **NBME convention:** one key plus three to seven distractors, so most published items have four or five options [NBME p. 12]. Four options is also what most learners and LMS question banks expect.
+- **Research favouring 3:** a meta-analysis of 80 years of studies (Rodriguez, 2005) concluded that **three options** give the best balance of psychometric quality and testing time. A classroom study found no loss of reliability or difficulty when items were cut from five options to three [Butler p. 327; Xu pp. 152–153].
 - **Efficiency:** learners answer three-option items about 5 seconds faster, so a test can cover more content in the same time [Xu p. 153].
 - **Learning:** fewer options mean less wrong information on screen and fewer chances to pick it up (the negative suggestion effect) [Butler p. 327]. See `learning-and-feedback.md`.
+- **Guessing:** with 4 options, a blind guess succeeds 25% of the time, against 33% with 3.
+
+Choosing a count. Use the user's choice if they give one. Otherwise use 4, and mention 3 as an option when it fits:
+
+| Choose... | When |
+|---|---|
+| **4** (default) | most quizzes and tests; when three plausible distractors exist; when matching an existing bank or LMS convention |
+| **3** | `purpose: learning` and limiting exposure to wrong information matters; time-limited tests that need more items; topics with only two genuinely plausible distractors |
+| **5** | only on request, matching an existing exam's format, and only if four distractors are genuinely plausible |
+| **Ordered MC** | one option per level in the confirmed progression (see `ordered-mc.md`) |
 
 Rules:
-- **Write 3 options by default.** Write more only if the user asks **and** each extra distractor is genuinely plausible. Butler notes four options are fine when three plausible distractors exist and testing time isn't a concern [Butler p. 327].
-- **Never pad.** A filler option is worse than one fewer option. It cues savvy learners and wastes reading time [NBME p. 22] (see `technical-flaws.md`, TW-EXHAUSTIVE). If only one plausible distractor exists, a two-option item is better than adding a weak third [Butler p. 327], but tell the user, because two options make guessing much easier.
+- **Never pad.** A filler option is worse than one fewer option. It cues savvy learners and wastes reading time [NBME p. 22] (see `technical-flaws.md`, TW-EXHAUSTIVE). If you can't find enough plausible distractors for the bank's count, write fewer and record `option_count_reason`. Butler notes three options are fine when a third distractor would be weak, and even two beats a filler option [Butler p. 327]. Tell the user about any two-option item, because guessing becomes much easier.
 - What matters is that **every distractor works**. After delivery, a distractor almost nobody chose is a candidate for replacement (see `item-analysis.md`).
 
 ## Checklist
@@ -120,5 +131,5 @@ Rules:
 - [ ] Options are short; no new information appears only in the options
 - [ ] Exactly one option is clearly best, and experts would agree
 - [ ] Every distractor is plausible to a learner who doesn't know the material
-- [ ] 3 options (unless the user asked for more and every extra one is plausible); no filler
+- [ ] Option count matches the bank setting (default 4), or a reason is recorded; no filler
 - [ ] Every option, the key included, has feedback explaining why it is or isn't best

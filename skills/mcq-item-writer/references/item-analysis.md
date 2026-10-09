@@ -28,7 +28,7 @@ Run these **before final scores are released** [NBME p. 26]:
 - Items with **p > .95** (very easy) or **p < .30** (very hard) tell you little about the group as a whole, and may mean the content doesn't match the learners' level [NBME p. 26].
 - Clusters of extreme p-values in one topic can mean the topic was fully mastered, or not taught at all.
 - A good test covers a **range** of difficulties as well as a range of topics.
-- **Target difficulty** *(beyond the guide)*: discrimination tends to peak when difficulty is somewhat easier than halfway between chance and 100%, which is **p ≈ .77 for 3-option items** (Lord, 1952, via [Butler p. 328]). The general rule is to aim a little above (1/k + 1) / 2, where k is the number of options. A target suits learning items too, because learners benefit most when they usually succeed (see `learning-and-feedback.md`). Report each item's p alongside the target.
+- **Target difficulty** *(beyond the guide)*: discrimination tends to peak when difficulty is somewhat easier than halfway between chance and 100%, which is **p ≈ .77 for 3-option items** (Lord, 1952, via [Butler p. 328]). The general rule is to aim a little above (1/k + 1) / 2, where k is the number of options. For 4-option items that suggests about .70–.75 (our approximation). A target suits learning items too, because learners benefit most when they usually succeed (see `learning-and-feedback.md`). Report each item's p alongside the target.
 
 ## Discrimination (item–total correlation)
 
@@ -51,7 +51,7 @@ Causes of near-zero or negative discrimination [NBME p. 27]:
 
 Always look at how every option performed [NBME p. 27]:
 - **Option chosen by almost nobody** → implausible, or ruled out by a structural flaw. Rewrite it.
-  > Beyond the guide: a distractor chosen by **under 5%** of learners is treated as nonfunctional. This was the single most common flaw in the classroom audit above (DiBattista & Kurzawa, 2011, via [Xu p. 150]). With 3-option items, a nonfunctional distractor effectively leaves a two-option item, so replace it promptly.
+  > Beyond the guide: a distractor chosen by **under 5%** of learners is treated as nonfunctional. This was the single most common flaw in the classroom audit above (DiBattista & Kurzawa, 2011, via [Xu p. 150]). With 3- or 4-option items, every nonfunctional distractor removes a large share of the item's choices, so replace it promptly.
 - **A distractor chosen somewhat more often than expected** → there may be two defensible answers.
 - **A distractor chosen more often than the key** → probably miskeyed.
 - **Distractor more popular among weaker learners than stronger ones** → working as intended.

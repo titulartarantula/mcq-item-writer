@@ -34,7 +34,7 @@ Don't offer it for: pure recall objectives, summative-only purposes where right/
 
 ## Workflow
 
-1. **Define the progression** for the concept: one level per option. The default is 3 options, so 3 levels.
+1. **Define the progression** for the concept: one level per option, usually 3 or 4 levels. The number of options equals the number of levels, whatever the bank's usual count. Record `option_count_reason: "ordered MC: N levels"` when they differ.
    - Level 1: a common naive conception
    - Level 2: partial understanding (some correct elements, one key gap)
    - Level 3: target understanding (the key)
@@ -56,7 +56,7 @@ Progression: *evaluating a survey estimate*
 > A city council surveys residents about a proposed bike lane by posting a link on a local cycling club's social-media page. 2,400 people respond, and 81% support the lane. Which of the following is the best evaluation of the 81% figure?
 >
 > A. It is trustworthy because the sample is large *(level 1)*
-> B. It may be off by a few points due to random sampling error *(level 2)*
+> B. It is accurate within normal random sampling error *(level 2)*
 > C. It likely overstates support because respondents selected themselves *(level 3, key)*
 
 ## Feedback in ordered MC
@@ -73,7 +73,7 @@ Each option's feedback **addresses the thinking at that level** and points to th
 
 Choose one with the user:
 - **Right/wrong** (default). Score the key 1 and everything else 0. Use the level data for reporting only.
-- **Partial credit.** Weight by level, e.g. 3 options → 100% / 50% / 0%. Use only for formative scoring, and tell learners in advance.
+- **Partial credit.** Weight by level, e.g. 3 levels → 100% / 50% / 0%, or 4 levels → 100% / 67% / 33% / 0%. Use only for formative scoring, and tell learners in advance.
 
 ## Export support
 

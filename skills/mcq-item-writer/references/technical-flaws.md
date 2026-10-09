@@ -194,10 +194,10 @@ Within an item:
 
 **Detect:** key-position distribution across items with `shuffle: false`; logical-order checks for numeric and ordinal options *(automatable)*.
 
-### X-OPTION-COUNT: Option count different from the default
-This skill writes **3 options** by default (see `item-anatomy.md`). Any other number needs a recorded reason, such as "user requested 4" or "only one plausible distractor exists". An extra option that is implausible is padding, and padding cues learners and wastes time [NBME p. 22; Butler p. 327].
+### X-OPTION-COUNT: Option count different from the bank setting
+Each bank sets `options_per_item`, which defaults to **4** and can be changed by the user (see `item-anatomy.md`). An item with a different number needs a recorded reason, such as "ordered MC: 3 levels" or "only two plausible distractors exist". An extra option that is implausible is padding, and padding cues learners and wastes time [NBME p. 22; Butler p. 327].
 
-**Detect:** option count ≠ 3 with no `option_count_reason` recorded *(automatable)*.
+**Detect:** option count ≠ `bank.defaults.options_per_item` with no `option_count_reason` recorded *(automatable)*.
 
 ### X-FEEDBACK-MISSING: Missing or thin feedback
 Every option, the key included, must carry feedback explaining why it is or isn't the best answer (see `learning-and-feedback.md`). Feedback that only says "Correct" or "Incorrect" doesn't count.
@@ -225,7 +225,7 @@ Every option, the key included, must carry feedback explaining why it is or isn'
 | TW-CONVERGENCE | Key shares the most elements | Balance terms and categories | ✓ |
 | X-AOTA | "All of the above" | Replace with a single best option | ✓ |
 | X-KEY-POSITION | Key position bias / illogical order | Spread keys; logical order + `shuffle: false`, else `shuffle: true` | ✓ |
-| X-OPTION-COUNT | Not 3 options, no reason recorded | Use 3; record reason for any other count; never pad | ✓ |
+| X-OPTION-COUNT | Count differs from the bank setting, no reason | Use the bank's count (default 4); record a reason otherwise; never pad | ✓ |
 | X-FEEDBACK-MISSING | Option lacks explanatory feedback | Write why each option is or isn't best | ✓ |
 
 ✓ = mostly automatable · ~ = linter flags candidates, judgment confirms
