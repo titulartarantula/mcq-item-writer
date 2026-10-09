@@ -172,6 +172,12 @@ def analyse(learners, items, resp, keys, bank, group_pct, previous):
 
     g = max(1, round(N * group_pct / 100))
 
+    # Without a bank, an option nobody chose would be invisible, yet it is the clearest nonfunctional
+    # distractor. Assume every item offers A..the highest letter seen anywhere in the data or keys.
+    letters = [c for l in learners for c in choice[l].values() if c and re.fullmatch(r"[A-H]", c)]
+    letters += [v for v in keys.values() if re.fullmatch(r"[A-H]", v or "")]
+    inferred = [chr(c) for c in range(ord("A"), ord(max(letters)) + 1)] if letters else []
+
     results = []
     pq_sum = 0.0
     for i in items_scored:
@@ -191,7 +197,7 @@ def analyse(learners, items, resp, keys, bank, group_pct, previous):
             res["target"] = it.get("difficulty_target")
         if not scored_mode:
             labels = sorted({choice[l][i] for l in learners if choice[l][i]} |
-                            ({o["label"] for o in it["options"]} if it else set()))
+                            ({o["label"] for o in it["options"]} if it else set(inferred)))
             prop = lambda grp, lab: sum(1 for l in grp if choice[l][i] == lab) / len(grp) if grp else 0.0
             res["options"] = {lab: {"total": round(prop(learners, lab), 3), "high": round(prop(high, lab), 3),
                                     "low": round(prop(low, lab), 3)} for lab in labels}

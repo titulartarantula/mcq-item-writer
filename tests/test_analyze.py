@@ -181,6 +181,15 @@ class Analyze(unittest.TestCase):
         by = {r["item"]: r for r in json.loads(out.getvalue())["items"]}
         self.assertIn("DRIFT", by["GOOD"]["flags"])
 
+    def test_never_chosen_option_flagged_without_bank(self):
+        # DEADD's option D is never chosen. With only a key (no bank), it must still be flagged.
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            ar.main([str(self.dir / "wide.csv"), "--key", "DEADD=A,GOOD=A", "--format", "json"])
+        by = {r["item"]: r for r in json.loads(out.getvalue())["items"]}
+        self.assertIn("D", by["DEADD"]["options"])
+        self.assertIn("NONFUNCTIONAL_DISTRACTOR", by["DEADD"]["flags"])
+
     def test_small_n_caution(self):
         write_wide(self.rows[:20], self.dir / "small.csv")
         out = io.StringIO()
