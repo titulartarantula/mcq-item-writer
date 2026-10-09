@@ -18,7 +18,7 @@
         "A file importable into Canvas is produced (a QTI .zip package) that contains all 6 questions with their answer keys",
         "The questions and feedback introduce no institutional policy specifics that are absent from the module (e.g. new deadlines, penalties, offices, or procedures)",
         "The response gives Canvas delivery advice suited to a formative check (e.g. feedback display, single attempt with feedback rather than try-until-correct)",
-        "No question's correct answer is the longest of its options (by word count)",
+        "No correct answer is conspicuously longer or shorter than its distractors (at least 1.5x and 3+ words longer than the average distractor, or at most half as long). Small differences of a word or two are acceptable",
         "Correct answers are spread across positions: no single letter is the key for more than 3 of the 6 questions",
         "No correct answer reuses a distinctive phrase of 5 or more consecutive words from the module text",
         "Every distractor is a plausible, distinct choice: none is a near-duplicate of another option or obviously absurd"
@@ -42,7 +42,7 @@
         "Recognises Q7 as well constructed and keeps it, or changes it only minimally",
         "Provides revised versions of the flawed questions, each with feedback for every option",
         "The response opens with a short, severity-ordered summary (e.g. must fix / should fix) in plain language, with no internal flaw codes in that summary",
-        "The revised questions introduce no new flaws (no key that is the longest option, no open or negative lead-in, no distractor that could reasonably be argued correct)"
+        "The revised questions introduce no new flaws (no conspicuously longer or shorter key, no open or negative lead-in, no distractor that could reasonably be argued correct)"
       ]
     },
     {

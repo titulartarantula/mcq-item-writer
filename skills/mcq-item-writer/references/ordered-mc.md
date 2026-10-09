@@ -89,7 +89,7 @@ Choose one with the user:
 
 ## Pitfalls
 
-- **The key stands out.** Higher-level ideas need more words. Trim every option to the same length and level of detail, and move any explanation into the feedback.
+- **The key stands out.** Higher-level ideas need more words. Keep the options comparable in length and detail by moving explanation into the feedback, but don't distort a level's meaning just to match word counts.
 - **Convergence.** Options built as steps on one ladder can share words ("sampling", "error"). Vary the wording.
 - **A low-level option nobody chooses.** If level 1 is a misconception that few learners at this stage actually hold, it becomes a nonfunctional distractor. Base the levels on real learner thinking.
 - **An unconfirmed progression.** An invented progression gives misleading diagnostics. Get it confirmed by the user or a subject-matter expert.

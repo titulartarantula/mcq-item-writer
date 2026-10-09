@@ -99,7 +99,7 @@ For each item, in this order. The order matters: the stem and its answer come **
    - **Key:** why it's best, citing the scenario's evidence.
    - **Distractor:** name the misconception (also record it in `misconception`), say why it's tempting, and say why it's less correct here.
 
-   Explanations and teaching points go in the feedback, never in the option text, because a key padded with explanation stands out.
+   Explanations and teaching points go in the feedback, never in the option text, because a key padded with explanation stands out. Options should be comparable in length, not identical: a word or two of difference is fine, and meaning and readability come first.
 
 8. **Options in order.** If they have a natural order (numbers, dates, scales, steps), arrange them that way and set `shuffle: false`. Otherwise set `shuffle: true`.
 

@@ -142,9 +142,9 @@ Test-savvy learners eliminate options with *always*, *never*, *all*, *none*, *on
 ### TW-KEY-STANDS-OUT: Correct option stands out  [NBME p. 23]
 The key is longer, more detailed, more qualified, or the only compound option. Writers who are also teachers tend to pack the key with caveats and explanation.
 
-*Fix:* make all options similar in length and detail. Move teaching content to the option **feedback**, not the option text.
+*Fix:* remove what makes the key stand out: caveats, qualifiers, and teaching content (move these to the option **feedback**). Options only need to be **comparable**, not identical. A word or two of difference is normal and doesn't cue anyone. Don't pad distractors or clip the key just to match lengths. That damages meaning and readability more than a small length difference ever cues. The cue to avoid is a key that is *conspicuously* longer or more detailed. A conspicuously *short* key among long distractors is the same cue in reverse.
 
-**Detect:** key length is 1.5 times the mean distractor length or more; key is the only option with a comma, "and", or parentheses *(automatable)*.
+**Detect:** key at least 1.5 times the mean distractor length **and** at least 3 words longer (or at most half as long, among distractors averaging 6+ words); key is the only option with a parenthetical *(automatable)*. Smaller differences are not flagged.
 
 ### TW-CLANG: Word repetition ("clang clue")  [NBME p. 23]
 A distinctive word or word root from the stem reappears in the key. The repetition can be **etymological** too: a stem that mentions "heat" paired with a key starting with "thermo-".
@@ -237,7 +237,7 @@ A reviewer can accept a finding by setting `"resolved": true` and adding a `"res
 | TW-GRAMMAR | Grammatical cue | Closed lead-in; consistent number and article | ✓ |
 | TW-EXHAUSTIVE | Collectively exhaustive subset | Replace an option in the subset; avoid opposite pairs | ~ |
 | TW-ABSOLUTE | Always / never / only | Remove; put the verb in the lead-in | ✓ |
-| TW-KEY-STANDS-OUT | Key longer or more detailed | Equalise; move teaching text to the feedback | ✓ |
+| TW-KEY-STANDS-OUT | Key conspicuously longer/shorter or more detailed | Remove caveats and teaching text (into feedback); comparable, not identical, lengths | ✓ |
 | TW-CLANG | Stem word repeated in key | Change the word, or use it in all options | ✓ |
 | TW-CONVERGENCE | Key shares the most elements | Balance terms and categories | ✓ |
 | X-AOTA | "All of the above" | Replace with a single best option | ✓ |
