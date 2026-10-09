@@ -15,7 +15,7 @@ Source: NBME Item-Writing Guide, Ch 2, Ch 6, Appendix C [NBME pp. 11, 42–43, 8
 
 | Type | Guide name | Structure | Can the learner go back? |
 |---|---|---|---|
-| **Single item** | A-type | one stem, one lead-in, 4+ options | n/a |
+| **Single item** | A-type | one stem, one lead-in, options (this skill defaults to 3) | n/a |
 | **Sequential set** | F-type | 2–3 items on a scenario that unfolds over time | **No.** Later items reveal earlier answers |
 | **Shared-stimulus set** | G-type | 2–3 items on the same content or stimulus | Yes |
 
@@ -47,11 +47,9 @@ Also:
 
 **Item 1**
 > Which of the following is the most appropriate immediate action?
-> A. Delete the README files from the shared drive
-> B. Disconnect the employee's laptop from the network*
-> C. Restore the shared drive from last night's backup
-> D. Run a full antivirus scan on the laptop
-> E. Send a firm-wide email warning about the phishing message
+> A. Disconnect the employee's laptop from the network*
+> B. Restore the shared drive from last night's backup
+> C. Run a full antivirus scan on the laptop
 
 **Update**
 > The laptop is disconnected. Twenty minutes later, two more employees on a different floor report the same file extensions on a different shared drive. Neither of them received the payroll email.
@@ -59,12 +57,10 @@ Also:
 **Item 2**
 > Which of the following is the most likely explanation for these new reports?
 > A. A second phishing email reached other employees
-> B. The backup system corrupted the file names
-> C. The malware spread before the laptop was isolated*
-> D. The shared drives developed a hardware fault
-> E. The two employees opened the README files
+> B. The malware spread before the laptop was isolated*
+> C. The two employees opened the README files
 
-Item 2 implies that Item 1's answer (isolate the laptop) was carried out, but it doesn't repeat that fact as a clue. It asks for a new inference. The options are clauses of similar length, so the key doesn't stand out.
+Item 2 implies that Item 1's answer (isolate the laptop) was carried out, but it doesn't repeat that fact as a clue. It asks for a new inference. The options are clauses of similar length, so the key doesn't stand out. In delivery, each option also carries feedback. For example, option C's feedback would explain that the README files are ransom notes left by the malware, not its cause.
 
 ## Shared-stimulus sets (navigable)
 

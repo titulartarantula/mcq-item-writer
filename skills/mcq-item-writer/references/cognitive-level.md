@@ -1,6 +1,6 @@
 # Choosing the cognitive level: recall vs application
 
-Source: NBME Item-Writing Guide, Ch 1 and Ch 6 [NBME pp. 9–10, 36–38, 44–45]. Restated and generalised for any subject.
+Sources: NBME Item-Writing Guide, Ch 1 and Ch 6 [NBME pp. 9–10, 36–38, 44–45]; Butler (2018); Xu, Kauer & Tupy (2016). Restated and generalised for any subject.
 
 ## Contents
 - Two cognitive tasks
@@ -8,6 +8,7 @@ Source: NBME Item-Writing Guide, Ch 1 and Ch 6 [NBME pp. 9–10, 36–38, 44–4
 - Turning a recall item into an application item
 - One scenario, many questions
 - What the evidence shows about scenarios
+- Tag the cognitive process (Bloom level)
 - Purpose of the test drives content
 
 ## Two cognitive tasks
@@ -31,8 +32,8 @@ Recall items often name the concept and ask for its features. In real practice i
 | **Application** | Supports reasoning, problem-based and team-based learning; gives realistic context | **Preferred.** Closer to real tasks; can test recall and reasoning together. Needs more testing time per item, and it is harder to pinpoint the specific gap |
 
 **Default rule for this skill:**
-- `stakes = summative` → write application items by default. Write a recall item only for a simple concept that genuinely has no realistic scenario, and record the reason.
-- `stakes = formative` → mix freely. Recall items are fine for knowledge checks, but include application items for the objectives that matter most.
+- `assessment_type = summative` → write application items by default. Write a recall item only for a simple concept that genuinely has no realistic scenario, and record the reason.
+- `assessment_type = formative` → mix freely. Recall items are fine for knowledge checks, but include application items for the objectives that matter most.
 
 ## Turning a recall item into an application item
 
@@ -67,6 +68,31 @@ Benefits of application items [NBME p. 38]:
 1. They are more authentic, because the learner solves a realistic problem.
 2. They tend to focus on important content rather than trivia.
 3. They identify learners who know many facts but can't apply them, since those learners must tell relevant information from irrelevant.
+
+## Tag the cognitive process (Bloom level)
+
+The NBME guide's recall/application split is a useful first cut. For blueprinting and for learning design, record a finer-grained **cognitive process** on every item [Butler pp. 325–326]:
+- Each item should require one **specific** process that matches its objective.
+- Across a test, items should cover the objectives' processes broadly without overlapping.
+- Each item must be answerable on its own, without depending on another item. Psychometric models assume this independence. Sequential sets are a deliberate, managed exception (see `item-sets.md`).
+
+Use the revised Bloom taxonomy levels as the tag (Anderson et al., 2001, via [Butler p. 326]):
+
+| `cognitive_process` | Typical lead-in pattern (see `lead-in-bank.md`) | Recall or application |
+|---|---|---|
+| `remember` | Which of the following is the definition of / term for X? | recall |
+| `understand` | Which of the following best explains / is an example of X? Which distinguishes X from Y? | recall–application |
+| `apply` | Given this situation, which is the most appropriate action / likely result? | application |
+| `analyze` | Which finding best explains...? Which is the most likely cause...? Which conclusion do these data support? | application |
+| `evaluate` | Which is the best evaluation of this claim / plan / estimate? Which is the strongest justification? | application |
+
+`create` can't really be tested with selected-response items. Use a constructed-response task for it.
+
+Points worth knowing:
+- **Item shells** (generic lead-in templates, each of which triggers a particular kind of thinking) are an established way to write items aimed at specific processes [Butler pp. 325–326]. `lead-in-bank.md` is this skill's shell library.
+- **MCQs can test higher-order thinking**. It's just harder to write such items. Asking for the *best* of several plausible answers, asking which theory an example illustrates, or asking for a prediction all push items above recall [Butler p. 326; Xu p. 149].
+- MCQ and constructed-response scores on the same content are highly correlated [Butler p. 326]. MCQs drift toward facts because fact items are easier to *write*, not because the format can't do more.
+- Learners who expect MCQs tend to study shallowly [Xu pp. 149–150]. If your items require application, **tell them** (see `administration.md`).
 
 ## Purpose of the test drives content
 

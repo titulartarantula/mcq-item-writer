@@ -1,12 +1,13 @@
 # Item formats: what to use and what to avoid
 
-Source: NBME Item-Writing Guide, Ch 2 and Appendix C [NBME pp. 11–16, 85–90]. Generalised. Examples are original.
+Sources: NBME Item-Writing Guide, Ch 2 and Appendix C [NBME pp. 11–16, 85–90]; Butler (2018); Xu, Kauer & Tupy (2016). Generalised. Examples are original.
 
 ## Contents
 - Default: one-best-answer
 - When a true-false format is requested
 - Rules if you must write true-false items
 - Retired formats and their problems
+- Variants and alternative formats
 - Handling format requests in this skill
 
 ## Default: one-best-answer
@@ -16,6 +17,7 @@ Use one-best-answer items (single items, or sets as described in `item-sets.md`)
 - Distractors only need to be *less correct*, not entirely false, so the format can test judgment and application.
 - One scenario can support several lead-ins (diagnose, act, predict), which makes efficient item sets.
 - Using one format consistently means writers focus on content rather than format, test-takers get one familiar format, and review is simpler [NBME p. 85].
+- Complex formats **don't measure higher-order thinking any better**. They make guessing easier, lower reliability, are hard to write, and are often thrown out at review. They also lead learners to answer in different ways, so fewer of them do the reasoning the writer intended, which undermines both measurement and learning [Butler pp. 324–325].
 
 ## When a true-false format is requested
 
@@ -62,6 +64,18 @@ NBME no longer uses these formats [NBME pp. 85–90]. Some still appear in cours
 | **R-type** (extended matching) | long shared option list (up to ~26) with a themed set of items | many nonfunctional distractors; high reading load. Usable only if each item has at least 3 plausible distractors in the list |
 | **X-type** (simple true-false) | each option judged true or false | all the true-false family problems above |
 
+## Variants and alternative formats
+
+These came from the research literature, not NBME. Each one is **offered or documented**, never applied silently.
+
+| Format | What it is | Delivery | This skill |
+|---|---|---|---|
+| **Ordered MC** | one-best-answer item whose options represent levels of understanding (Briggs et al., 2006, via [Xu p. 149]) | standard single-answer question; optional partial credit | **Offered** to the user when the purpose is `learning` or `both` and the concept has a progression. See `ordered-mc.md` |
+| **Confidence-weighted MC** | learner rates their confidence; scoring combines confidence with correctness [Butler p. 325; Xu pp. 149–150] | needs a confidence rating per item and custom scoring; few LMSs support it natively | Documented only (see `administration.md`) |
+| **Discrete-option MC** | options shown one at a time, each judged correct or not [Xu p. 150] | needs dedicated platform support | Documented only |
+| **"You are the teacher"** | learner reads a short answer and chooses how many errors it contains [Xu p. 150] | standard single-answer question | Can be written on request as a one-best-answer item with numeric options (0, 1, 2, 3 or more) and `shuffle: false` |
+| **Answer-until-correct** | learner keeps trying until right | LMS "multiple attempts" setting | **Advise against.** It taught no more than one attempt with feedback, and it lowers reliability [Butler p. 325] |
+
 ## Handling format requests in this skill
 
 | Request | Response |
@@ -71,4 +85,6 @@ NBME no longer uses these formats [NBME pp. 85–90]. Some still appear in cours
 | "Select all that apply", "multiple response" | Explain the risk; offer a one-best-answer conversion. If the user insists, follow the true-false rules above and set `format: "multiple-response"` with a warning in the review notes |
 | "True/false" | Same as above |
 | "Matching" | Offer extended matching only with a clear theme and lead-in, and check that each item has at least 3 plausible distractors |
-| K-type, "1 and 3 only" combinations | Decline the format, explain why, and convert to one-best-answer |
+| K-type, "1 and 3 only" combinations, "A and B but not C" | Decline the format, explain why [Butler pp. 324–325; Xu p. 153], and convert to one-best-answer |
+| "Diagnostic" questions, "find out what they misunderstand" | Offer ordered MC (see `ordered-mc.md`) |
+| "Let them try again until they get it" | Recommend one attempt plus explanatory feedback instead (see `learning-and-feedback.md`) |

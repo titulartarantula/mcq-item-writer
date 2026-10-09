@@ -1,6 +1,6 @@
 # Five rules for writing one-best-answer items
 
-Source: NBME Item-Writing Guide, Ch 5 [NBME pp. 33–35]. Restated and generalised for any subject. Each rule is followed by a description of how to apply it.
+Sources: NBME Item-Writing Guide, Ch 5 [NBME pp. 33–35], with distractor and feedback guidance from Butler (2018) and Xu, Kauer & Tupy (2016). Restated and generalised for any subject. Each rule is followed by a description of how to apply it.
 
 ## Contents
 - Rule 1: Test an important concept
@@ -61,13 +61,21 @@ See `cognitive-level.md` for when a recall item is acceptable.
 
 **How to apply:**
 1. Write the key first.
-2. Generate distractors that are **the same kind of thing** as the key and that a partly informed learner might choose:
-   - common misconceptions and typical errors at this learner level
+2. Generate **two** distractors (default 3 options; see `item-anatomy.md`) that are **the same kind of thing** as the key and that a partly informed learner might choose:
+   - common misconceptions and typical errors at this learner level. Real learner errors from past tests or class work are the best source [Xu p. 150]
+   - true statements that don't answer the question asked [Butler p. 327]
    - answers that would be right in a slightly different scenario
    - steps that are correct but out of sequence (right action, wrong time)
    - near neighbours in the same category
+
+   When `purpose` is `learning` or `both`, prefer true-but-not-the-answer distractors and misconceptions the feedback will correct. Avoid inventing false "facts" learners might remember (see `learning-and-feedback.md`).
 3. Sometimes the assignment supplies the key. If the blueprint cell is "identify the cause: phishing", phishing is the key, and the distractors are other plausible causes of the same symptoms [NBME pp. 34–35].
-4. Write a **rationale for each distractor**: why a learner might pick it, and why it is less correct than the key. If you can't explain why someone would choose a distractor, replace it.
+4. Write **feedback for every option**, the key included:
+   - for each distractor: the misconception it represents, why a learner might choose it, and why it is less correct than the key
+   - for the key: why it is best, using the scenario's evidence
+
+   If you can't explain why someone would choose a distractor, replace it.
+5. If the user chose **ordered MC** for this objective, build the options from the confirmed progression instead (see `ordered-mc.md`).
 
 ## Rule 5: Review every item for technical flaws
 
@@ -84,7 +92,7 @@ See `cognitive-level.md` for when a recall item is acceptable.
 1. Testing point (Rule 1)
 2. Scenario that sets up a decision (Rule 2)
 3. Closed lead-in (Rule 3)
-4. Key, then distractors, then a rationale for each option (Rule 4)
+4. Key, then distractors, then feedback for every option (Rule 4)
 5. Flaw audit, cover-the-options test, peer review (Rule 5)
 
 ## Final review questions

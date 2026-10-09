@@ -1,6 +1,6 @@
 # Technical item flaws
 
-Source: NBME Item-Writing Guide, Ch 3 [NBME pp. 17–25]. Restated and generalised for any subject. All examples are original.
+Sources: NBME Item-Writing Guide, Ch 3 [NBME pp. 17–25]; evidence added from Butler (2018) and Xu, Kauer & Tupy (2016). Restated and generalised for any subject. All examples are original.
 
 Technical flaws come in two kinds [NBME p. 17]:
 
@@ -14,7 +14,7 @@ Each flaw has a stable **code**. The linter (`scripts/lint_items.py`) and review
 ## Contents
 - Irrelevant-difficulty flaws: ID-LONG-OPTIONS, ID-NUMERIC, ID-VAGUE, ID-NOTA, ID-NONPARALLEL, ID-COMPLEX-STEM, ID-NEGATIVE
 - Testwise flaws: TW-GRAMMAR, TW-EXHAUSTIVE, TW-ABSOLUTE, TW-KEY-STANDS-OUT, TW-CLANG, TW-CONVERGENCE
-- Additional checks beyond the guide: X-AOTA, X-KEY-POSITION
+- Additional checks beyond the guide: X-AOTA, X-KEY-POSITION, X-OPTION-COUNT, X-FEEDBACK-MISSING
 - Summary table
 
 ---
@@ -65,6 +65,11 @@ When options call for judgment, "None of the above" forces the learner to compar
 
 *Fix:* replace it with a specific option that commits to a decision, e.g. "No change to the current process is needed", "No further action is required at this time", or "Continue monitoring".
 
+*Evidence:*
+- "None of the above" makes items harder **and** less discriminating. Learners pick it more or less often depending on how often it appears elsewhere in the test [Butler p. 326; Xu p. 153].
+- In learning items, when it is the **key**, the learner never sees the correct answer and can get the item right just by rejecting everything [Butler p. 326].
+- One study found it acceptable when it replaced a *weak* distractor [Butler p. 326]. This skill still avoids it, and **never** uses it as the key when `purpose` is `learning` or `both`.
+
 **Detect:** match "none of the above", "none of these", and "none of the options" *(automatable)*.
 
 ### ID-NONPARALLEL: Nonparallel options  [NBME p. 19]
@@ -92,6 +97,10 @@ Also avoid **teaching statements** in the stem: explanations included to instruc
 "All of the following EXCEPT", "Which is NOT", and "LEAST likely" ask the learner to find the *least* correct option. When most items on a test are phrased positively, learners miss the negative word even if it is bold or capitalised.
 
 *Fix:* rewrite with a positive structure. If the true statements could build a scenario, use them as scenario details and ask a positive question.
+
+*Evidence:* negative items are harder without discriminating better between stronger and weaker learners [Xu p. 153].
+
+*Last resort:* if the user insists on keeping a negative lead-in, put the negative word in **bold capitals** [Xu p. 153] and record a warning in the review notes. NBME notes that learners still miss it [NBME p. 21].
 
 **Detect:** EXCEPT, NOT, LEAST, FALSE, or "incorrect" in the lead-in *(automatable)*.
 
@@ -133,7 +142,7 @@ Test-savvy learners eliminate options with *always*, *never*, *all*, *none*, *on
 ### TW-KEY-STANDS-OUT: Correct option stands out  [NBME p. 23]
 The key is longer, more detailed, more qualified, or the only compound option. Writers who are also teachers tend to pack the key with caveats and explanation.
 
-*Fix:* make all options similar in length and detail. Move teaching content to the **rationale/feedback** field, not the option text.
+*Fix:* make all options similar in length and detail. Move teaching content to the option **feedback**, not the option text.
 
 **Detect:** key length is 1.5 times the mean distractor length or more; key is the only option with a comma, "and", or parentheses *(automatable)*.
 
@@ -169,17 +178,31 @@ The key shares the most elements with the other options, so counting repeated te
 
 ## Additional checks beyond the guide
 
-These checks are not in the NBME guide. They come from the wider item-writing literature (Haladyna, Downing & Rodriguez, 2002) and are standard practice.
+These checks are not in the NBME guide. They come from the wider item-writing literature (Haladyna, Downing & Rodriguez, 2002; Butler, 2018; Xu, Kauer & Tupy, 2016) and from this skill's own requirements.
 
 ### X-AOTA: "All of the above"
-If a learner can identify two options as correct, "All of the above" must be the key. If they can identify one option as wrong, it can't be. Either way, partial knowledge earns the point. Replace it with a single best option.
+If a learner can identify two options as correct, "All of the above" must be the key. If they can identify one option as wrong, it can't be. Either way, partial knowledge earns the point [Xu p. 153]. It reduces discrimination, usually makes items easier, and learners pick it more often when it appears only occasionally on a test [Butler pp. 326–327]. Replace it with a single best option.
 
 **Detect:** match "all of the above" or "all of these" *(automatable)*.
 
 ### X-KEY-POSITION: Unbalanced key positions across a set
-Writers tend to place keys in the middle positions (B, C). Across a set of items, keys should be spread roughly evenly over positions. Within an item, options should be in a logical order: alphabetical for single words or short phrases, numeric for numbers, chronological for steps.
+Writers tend to place keys in the middle positions, and guessers tend to choose middle positions too [Xu pp. 153–154]. Across a set of items, keys should be spread roughly evenly over positions.
 
-**Detect:** key-position distribution across the item set; option order checks *(automatable)*.
+Within an item:
+- If the options have a natural order (numbers, dates, scales, sequential steps), author them in that order and set `shuffle: false`.
+- Otherwise, set `shuffle: true` so the delivery platform randomises positions (see `administration.md`).
+
+**Detect:** key-position distribution across items with `shuffle: false`; logical-order checks for numeric and ordinal options *(automatable)*.
+
+### X-OPTION-COUNT: Option count different from the default
+This skill writes **3 options** by default (see `item-anatomy.md`). Any other number needs a recorded reason, such as "user requested 4" or "only one plausible distractor exists". An extra option that is implausible is padding, and padding cues learners and wastes time [NBME p. 22; Butler p. 327].
+
+**Detect:** option count ≠ 3 with no `option_count_reason` recorded *(automatable)*.
+
+### X-FEEDBACK-MISSING: Missing or thin feedback
+Every option, the key included, must carry feedback explaining why it is or isn't the best answer (see `learning-and-feedback.md`). Feedback that only says "Correct" or "Incorrect" doesn't count.
+
+**Detect:** any option with empty feedback, or feedback under about 8 words, or feedback that only restates correct/incorrect *(automatable)*.
 
 ---
 
@@ -197,10 +220,12 @@ Writers tend to place keys in the middle positions (B, C). Across a set of items
 | TW-GRAMMAR | Grammatical cue | Closed lead-in; consistent number and article | ✓ |
 | TW-EXHAUSTIVE | Collectively exhaustive subset | Replace an option in the subset; avoid opposite pairs | ~ |
 | TW-ABSOLUTE | Always / never / only | Remove; put the verb in the lead-in | ✓ |
-| TW-KEY-STANDS-OUT | Key longer or more detailed | Equalise; move teaching text to the rationale | ✓ |
+| TW-KEY-STANDS-OUT | Key longer or more detailed | Equalise; move teaching text to the feedback | ✓ |
 | TW-CLANG | Stem word repeated in key | Change the word, or use it in all options | ✓ |
 | TW-CONVERGENCE | Key shares the most elements | Balance terms and categories | ✓ |
 | X-AOTA | "All of the above" | Replace with a single best option | ✓ |
-| X-KEY-POSITION | Key position bias / illogical order | Spread keys; order options logically | ✓ |
+| X-KEY-POSITION | Key position bias / illogical order | Spread keys; logical order + `shuffle: false`, else `shuffle: true` | ✓ |
+| X-OPTION-COUNT | Not 3 options, no reason recorded | Use 3; record reason for any other count; never pad | ✓ |
+| X-FEEDBACK-MISSING | Option lacks explanatory feedback | Write why each option is or isn't best | ✓ |
 
 ✓ = mostly automatable · ~ = linter flags candidates, judgment confirms

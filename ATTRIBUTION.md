@@ -28,7 +28,24 @@ This project is not affiliated with, endorsed by, or sponsored by NBME. "NBME" a
 
 We chose the NonCommercial licence for the reference content to respect the noncommercial, educational purpose the source guide was released for.
 
+## Supporting research reviews
+
+Two research reviews add evidence on item writing, learning from tests, feedback, and test administration. They are cited as `[Butler p. N]` and `[Xu p. N]`, using journal page numbers:
+
+> Butler AC. Multiple-choice testing in education: Are the best practices for assessment also good for learning? *Journal of Applied Research in Memory and Cognition*. 2018;7(3):323–331. https://doi.org/10.1016/j.jarmac.2018.07.002
+
+> Xu X, Kauer S, Tupy S. Multiple-choice questions: Tips for optimizing assessment in-seat and online. *Scholarship of Teaching and Learning in Psychology*. 2016;2(2):147–158. https://doi.org/10.1037/stl0000062
+
+Both articles are copyright of the American Psychological Association or its allied publishers. This repository **summarises their findings in its own words and cites them**. It reproduces none of their text, figures, or tables, and does not include the articles. Read them through your library.
+
 ## Secondary sources cited
 
+Primary studies named in the reference files are cited **as reported in** the reviews above (shown as "via [Butler p. N]" or "via [Xu p. N]"). We have not independently checked them.
+
+- Anderson LW, Krathwohl DR, et al. (Eds.). *A Taxonomy for Learning, Teaching, and Assessing*. New York: Longman; 2001.
+- Briggs DC, Alonzo AC, Schwab C, Wilson M. Diagnostic assessment with ordered multiple-choice items. *Educational Assessment*. 2006;11:33–63.
+- DiBattista D, Kurzawa L. Examination of the quality of multiple-choice items on classroom tests. *Canadian Journal for the Scholarship of Teaching and Learning*. 2011;2(2):Article 4.
 - Haladyna TM, Downing SM, Rodriguez MC. A review of multiple-choice item-writing guidelines for classroom assessment. *Applied Measurement in Education*. 2002;15(3):309–333.
 - Kelley TL. The selection of upper and lower groups for the validation of test items. *Journal of Educational Psychology*. 1939;30:17–24.
+- Lord FM. The relation of the reliability of multiple-choice tests to the distribution of item difficulties. *Psychometrika*. 1952;17(2):181–194.
+- Rodriguez MC. Three options are optimal for multiple-choice items: A meta-analysis of 80 years of research. *Educational Measurement: Issues and Practice*. 2005;24(2):3–13.

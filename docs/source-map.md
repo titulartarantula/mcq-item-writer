@@ -1,6 +1,6 @@
 # Source coverage map
 
-How each section of the NBME Item-Writing Guide (6th ed., Oct 2024 printing) maps onto this skill. Use it to check coverage and to find the right reference file. Page numbers are the guide's printed page numbers.
+How each section of the NBME Item-Writing Guide (6th ed., Oct 2024 printing) and the two supporting reviews map onto this skill. Use it to check coverage and to find the right reference file. Page numbers are the guide's printed page numbers.
 
 | Guide section | Pages | Covered in | Notes |
 |---|---|---|---|
@@ -38,17 +38,47 @@ How each section of the NBME Item-Writing Guide (6th ed., Oct 2024 printing) map
 | **App C** Retired formats (B, C, D, H, I, K, R) | 85–90 | `formats.md`, `item-sets.md` (R-type) | |
 | **App D** Resources and further reading | 91–92 | `ATTRIBUTION.md` | Only sources this skill cites |
 
+## Butler (2018): *Multiple-choice testing in education*
+
+| Section | Pages | Covered in |
+|---|---|---|
+| Testing as learning; testing effect | 323–324 | `learning-and-feedback.md` |
+| BP1 Avoid complex item types and answering procedures (incl. answer-until-correct, confidence-weighted) | 324–325 | `formats.md`, `learning-and-feedback.md`, `administration.md` |
+| BP2 Items engaging specific cognitive processes; item shells; Bloom | 325–326 | `cognitive-level.md` (cognitive process tag), `lead-in-bank.md` |
+| BP3 Avoid NOTA/AOTA (assessment and learning effects) | 326–327 | `technical-flaws.md` (ID-NOTA, X-AOTA), `learning-and-feedback.md` |
+| BP4 Three plausible options; negative suggestion effect; distractors as other items' keys | 327–328 | `item-anatomy.md`, `learning-and-feedback.md`, X-OPTION-COUNT |
+| BP5 Challenging but not too difficult; target p ≈ .77 (3 options) | 328–329 | `learning-and-feedback.md`, `item-analysis.md` |
+| Bonus: feedback, including timing and motivation | 329 | `learning-and-feedback.md` |
+
+## Xu, Kauer & Tupy (2016): *Multiple-choice questions: Tips for optimizing assessment*
+
+| Section | Pages | Covered in |
+|---|---|---|
+| Effectiveness; shallower assessment; deeper thinking | 148–149 | `cognitive-level.md` |
+| Ordered MC; confidence testing; discrete-option MC; "You are the teacher"; formula scoring | 149–150 | `ordered-mc.md`, `formats.md`, `administration.md` |
+| Low-quality items (DiBattista & Kurzawa thresholds) | 150 | `item-analysis.md`, `administration.md` |
+| Fairness | 150 | `administration.md`, `blueprint.md` |
+| False knowledge; collaborative testing | 150–151 | `learning-and-feedback.md` |
+| Feedback content, timing, techniques (self-correction, online, deferral, student feedback) | 151–152 | `learning-and-feedback.md`, `administration.md` |
+| Efficiency; number of options | 152–153 | `item-anatomy.md`, `blueprint.md` |
+| Negatives, NOTA, composites, AOTA, parallel options | 153 | `technical-flaws.md`, `formats.md` |
+| Question order; answer-position randomisation | 153–154 | `administration.md`, X-KEY-POSITION |
+| Cheating prevention and countermeasures | 154–155 | `administration.md` |
+
 ## Deliberately omitted (health-sciences specific)
 
 - Clinical-only lead-ins (e.g., vaccines, pharmacotherapy, brain death, autopsy consent, involuntary admission). Their *cognitive patterns* are kept in `lead-in-bank.md`.
 - USMLE-specific context.
 - Clinical media specifics (radiographs, heart sounds, avatars). Generalised in `media.md`.
 
-## Additions beyond the guide
+## Additions beyond the NBME guide
 
-Each is labelled "Beyond the guide" where it appears:
-- `X-AOTA` and `X-KEY-POSITION` checks (Haladyna, Downing & Rodriguez, 2002)
-- three-option research note (`item-anatomy.md`)
-- discrimination, nonfunctional-distractor, and drift thresholds (`item-analysis.md`)
+Labelled "Beyond the guide" or cited to Butler or Xu where they appear:
+- `X-AOTA`, `X-KEY-POSITION`, `X-OPTION-COUNT`, `X-FEEDBACK-MISSING` checks
+- 3-option default, which departs from NBME's 4–5 convention (`item-anatomy.md`)
+- required per-option feedback and a purpose-based distractor policy (`learning-and-feedback.md`)
+- ordered MC, offered to the user (`ordered-mc.md`)
+- test administration guidance (`administration.md`)
+- target difficulty and discrimination/nonfunctional thresholds (`item-analysis.md`); the drift threshold is a convention
 - timing heuristic (`blueprint.md`)
 - WCAG 2.2 AA note (`media.md`)

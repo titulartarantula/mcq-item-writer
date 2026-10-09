@@ -1,6 +1,6 @@
 # Blueprinting: deciding what to test
 
-Source: NBME Item-Writing Guide, Ch 1, Ch 5 Rule 1, Ch 6 [NBME pp. 9–10, 33, 36]. Generalised.
+Sources: NBME Item-Writing Guide, Ch 1, Ch 5 Rule 1, Ch 6 [NBME pp. 9–10, 33, 36]; Butler (2018); Xu, Kauer & Tupy (2016). Generalised.
 
 ## Contents
 - Why tests need a blueprint
@@ -8,6 +8,7 @@ Source: NBME Item-Writing Guide, Ch 1, Ch 5 Rule 1, Ch 6 [NBME pp. 9–10, 33, 3
 - What material to test
 - Building a blueprint
 - How many items
+- Fairness check
 - Blueprint output format (for this skill)
 
 ## Why tests need a blueprint
@@ -44,7 +45,7 @@ The purpose determines both the content and how much psychometric rigour is need
 
 Use two dimensions [NBME p. 33]:
 1. **Content**: topics, units, or objectives.
-2. **Task**: the cognitive task (see the categories in `lead-in-bank.md`: explain, gather information, interpret, classify, predict, prevent, act, communicate...).
+2. **Task**: the cognitive task (see the categories in `lead-in-bank.md`: explain, gather information, interpret, classify, predict, prevent, act, communicate...). Each task maps to a Bloom-level `cognitive_process` tag (see `cognitive-level.md`), so you can check the balance of thinking across the test.
 
 Steps:
 1. List the objectives or topics. Give each a weight (percentage of the test) based on importance. Time spent in instruction is a reasonable starting proxy, but importance is what should drive it.
@@ -59,7 +60,14 @@ Steps:
 - Classroom summative tests: as many as testing time allows. Longer tests are more reliable.
 - Formative checks: short is fine. Each item gives feedback, but the total score is not reliable enough for decisions about individuals.
 
-> Beyond the guide: a common planning figure is about 1 minute per short recall item and 1.5–2 minutes per scenario-based application item.
+> Beyond the guide: a common planning figure is about 1 minute per short recall item and 1.5–2 minutes per scenario-based application item. Three-option items take about 5 seconds less each than four- or five-option items, so the 3-option default fits more items into the same time [Xu p. 153].
+
+## Fairness check
+
+Before finalising, confirm the blueprint [Xu p. 150]:
+- matches what was actually taught and the syllabus, not just one part of it
+- spreads items broadly across topics
+- comes with a plan to **tell learners** what kind of thinking the items will require (see `administration.md`)
 
 ## Blueprint output format (for this skill)
 
@@ -67,7 +75,8 @@ Steps:
 {
   "blueprint": {
     "title": "Intro Project Management: Unit 2 summative",
-    "purpose": "summative",
+    "assessment_type": "summative",
+    "purpose": "assessment",
     "stakes": "medium",
     "learner_level": "first-year undergraduate",
     "total_items": 40,
@@ -75,9 +84,13 @@ Steps:
     "cognitive_mix": {"application": 0.8, "recall": 0.2},
     "content_weights": {"Scope management": 0.25, "Scheduling": 0.30, "Risk": 0.30, "Communication": 0.15},
     "cells": [
-      {"content": "Scheduling", "task": "interpret-data", "n": 4, "objective_ids": ["PM2.3"]},
-      {"content": "Risk", "task": "choose-action", "n": 5, "objective_ids": ["PM2.5", "PM2.6"]}
+      {"content": "Scheduling", "task": "interpret-data", "cognitive_process": "analyze", "n": 4, "objective_ids": ["PM2.3"]},
+      {"content": "Risk", "task": "choose-action", "cognitive_process": "apply", "n": 5, "objective_ids": ["PM2.5", "PM2.6"], "ordered_mc": false}
     ]
   }
 }
 ```
+
+- `assessment_type`: `formative` | `summative`. Drives the recall/application mix (see `cognitive-level.md`).
+- `purpose`: `assessment` | `learning` | `both`. Drives distractor policy and feedback release (see `learning-and-feedback.md`).
+- `ordered_mc`: set only after the user has accepted ordered MC for that cell (see `ordered-mc.md`).

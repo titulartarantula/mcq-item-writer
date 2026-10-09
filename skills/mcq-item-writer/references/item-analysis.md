@@ -1,6 +1,6 @@
 # Item analysis: interpreting response data
 
-Source: NBME Item-Writing Guide, Ch 4 [NBME pp. 26–29]. The worked patterns below are original illustrations of the guide's interpretive rules. Thresholds marked "beyond the guide" are common conventions, not NBME guidance.
+Sources: NBME Item-Writing Guide, Ch 4 [NBME pp. 26–29]; Butler (2018); Xu, Kauer & Tupy (2016). The worked patterns below are original illustrations of the guide's interpretive rules. Thresholds marked "beyond the guide" come from the cited research or common convention, not from NBME.
 
 ## Contents
 - The four standard analyses
@@ -28,6 +28,7 @@ Run these **before final scores are released** [NBME p. 26]:
 - Items with **p > .95** (very easy) or **p < .30** (very hard) tell you little about the group as a whole, and may mean the content doesn't match the learners' level [NBME p. 26].
 - Clusters of extreme p-values in one topic can mean the topic was fully mastered, or not taught at all.
 - A good test covers a **range** of difficulties as well as a range of topics.
+- **Target difficulty** *(beyond the guide)*: discrimination tends to peak when difficulty is somewhat easier than halfway between chance and 100%, which is **p ≈ .77 for 3-option items** (Lord, 1952, via [Butler p. 328]). The general rule is to aim a little above (1/k + 1) / 2, where k is the number of options. A target suits learning items too, because learners benefit most when they usually succeed (see `learning-and-feedback.md`). Report each item's p alongside the target.
 
 ## Discrimination (item–total correlation)
 
@@ -44,13 +45,13 @@ Causes of near-zero or negative discrimination [NBME p. 27]:
 - a flaw that weaker learners exploit, or that forces everyone to guess
 - **a miskey.** A miskeyed item usually shows a very low p **and** negative discrimination
 
-> Beyond the guide: a common rule of thumb for classroom tests is point-biserial ≥ .20 acceptable, .10–.19 marginal (review), < .10 poor (revise or drop). Treat these as prompts for review, not rules.
+> Beyond the guide: an audit of 1,198 classroom items treated item–total correlations below **.20** as unsatisfactory, and these were among the most common problems (DiBattista & Kurzawa, 2011, via [Xu p. 150]). Treat .20 as a prompt for review, not an automatic rejection.
 
 ## Option (distractor) analysis
 
 Always look at how every option performed [NBME p. 27]:
 - **Option chosen by almost nobody** → implausible, or ruled out by a structural flaw. Rewrite it.
-  > Beyond the guide: a distractor chosen by under 5% of learners is often called "nonfunctional".
+  > Beyond the guide: a distractor chosen by **under 5%** of learners is treated as nonfunctional. This was the single most common flaw in the classroom audit above (DiBattista & Kurzawa, 2011, via [Xu p. 150]). With 3-option items, a nonfunctional distractor effectively leaves a two-option item, so replace it promptly.
 - **A distractor chosen somewhat more often than expected** → there may be two defensible answers.
 - **A distractor chosen more often than the key** → probably miskeyed.
 - **Distractor more popular among weaker learners than stronger ones** → working as intended.
@@ -126,10 +127,10 @@ Both groups prefer B over the key, and B pulls in strong learners even more than
 | `POSSIBLE_MISKEY` | a distractor chosen by more of the High group than the key, **and** discrimination < 0 |
 | `POSSIBLE_TWO_ANSWERS` | a distractor chosen by ≥ 30% of the High group *(threshold beyond the guide)* |
 | `NEGATIVE_DISCRIMINATION` | discrimination < 0 |
-| `LOW_DISCRIMINATION` | 0 ≤ discrimination < .10 *(beyond the guide)* |
+| `LOW_DISCRIMINATION` | 0 ≤ discrimination < .20 *(DiBattista & Kurzawa, 2011)* |
 | `TOO_EASY` | p > .95 |
 | `TOO_HARD` | p < .30 |
-| `NONFUNCTIONAL_DISTRACTOR` | distractor chosen by < 5% of all learners *(beyond the guide)* |
+| `NONFUNCTIONAL_DISTRACTOR` | distractor chosen by < 5% of all learners *(DiBattista & Kurzawa, 2011)* |
 | `REVERSE_DISTRACTOR` | distractor chosen by more High than Low learners |
 | `DRIFT` | change in p of more than .15 against an earlier administration *(beyond the guide)* |
 
@@ -138,3 +139,4 @@ Both groups prefer B over the key, and B pulls in strong learners even more than
 - Small groups (fewer than about 30 learners) give unstable statistics. Report them with a caution and lean on content review instead.
 - Revising distractors changes item statistics in ways that are hard to predict [NBME p. 28]. Treat a revised item as a new item.
 - Statistics point to problems. **A subject-matter expert decides** whether to rekey, revise, drop, or keep.
+- Use the results to improve the bank. The wrong answers learners actually choose often make good future distractors [Xu p. 150], and learners' comments on items surface ambiguity the statistics miss [Xu p. 152].

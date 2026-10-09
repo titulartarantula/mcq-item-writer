@@ -1,6 +1,6 @@
 # Anatomy of a one-best-answer item
 
-Source: NBME Item-Writing Guide, Ch 2 and Ch 6 [NBME pp. 11–16, 40]. Restated and generalised for any subject.
+Sources: NBME Item-Writing Guide, Ch 2 and Ch 6 [NBME pp. 11–16, 40]; Butler (2018); Xu, Kauer & Tupy (2016). Restated and generalised for any subject.
 
 ## Contents
 - The two families of multiple-choice items
@@ -30,12 +30,10 @@ Every multiple-choice format belongs to one of two families [NBME p. 11]:
 │ Scenario (vignette): the situation, data, and context.       │
 │ Lead-in: one closed question about the scenario.             │
 └──────────────────────────────────────────────────────────────┘
-  OPTION SET
-   A. distractor
-   B. key  ← the single best answer
-   C. distractor
-   D. distractor
-   E. distractor
+  OPTION SET (default 3)                    FEEDBACK (every option)
+   A. distractor                     →  why it is less correct; the misconception
+   B. key  ← the single best answer  →  why it is best, using the scenario's evidence
+   C. distractor                     →  why it is less correct; the misconception
 ```
 
 - **Stem**: everything before the options. Usually a scenario followed by a lead-in [NBME p. 12].
@@ -44,6 +42,7 @@ Every multiple-choice format belongs to one of two families [NBME p. 11]:
 - **Options**: the key plus the distractors. They should be short and uniform.
 - **Key**: the single best answer.
 - **Distractors**: plausible options that are less correct than the key.
+- **Feedback**: a short explanation for **every** option, the key included, of why it is or isn't the best answer. Required for every item this skill writes (see `learning-and-feedback.md`). Teaching content goes here, never in the option text.
 
 ## Item shape
 
@@ -86,10 +85,8 @@ The options cover cause, geography, affected sectors, and duration. They can't b
 
 > A regional bank holds a large portfolio of adjustable-rate mortgages issued to borrowers with low credit scores. Interest rates rise sharply over 18 months. Which of the following is the most likely immediate effect on the bank's balance sheet?
 > A. Decrease in deposit liabilities
-> B. Increase in loan-loss provisions
+> B. Increase in loan-loss provisions*
 > C. Increase in retained earnings
-> D. Decrease in regulatory capital requirements
-> E. Increase in cash reserves
 
 Every option is now a balance-sheet effect, and the options can be ranked from least to most likely.
 
@@ -101,9 +98,18 @@ The test: content experts would all agree on which option is best, even if they 
 
 ## How many options
 
-One-best-answer items have one key and **three to seven distractors** [NBME p. 12]. Most published items have four or five options in total. What matters is whether each distractor is plausible, not how many there are. Never add an implausible option just to reach five. Filler options cue savvy learners and waste reading time [NBME p. 22] (see `technical-flaws.md`, TW-EXHAUSTIVE).
+**This skill's default: 3 options (the key plus 2 plausible distractors), for every purpose.**
 
-> Beyond the guide: research summarised by Haladyna, Downing & Rodriguez (2002) suggests that three well-functioning options often perform as well as four or five. If you cannot write a third or fourth plausible distractor, use fewer options rather than adding filler.
+The sources differ on this:
+- **NBME convention:** one key plus three to seven distractors, so most published items have four or five options [NBME p. 12].
+- **Research:** a meta-analysis of 80 years of studies (Rodriguez, 2005) concluded that **three options** give the best balance of psychometric quality and testing time. A classroom study found no loss of reliability or difficulty when items were cut from five options to three [Butler p. 327; Xu pp. 152–153].
+- **Efficiency:** learners answer three-option items about 5 seconds faster, so a test can cover more content in the same time [Xu p. 153].
+- **Learning:** fewer options mean less wrong information on screen and fewer chances to pick it up (the negative suggestion effect) [Butler p. 327]. See `learning-and-feedback.md`.
+
+Rules:
+- **Write 3 options by default.** Write more only if the user asks **and** each extra distractor is genuinely plausible. Butler notes four options are fine when three plausible distractors exist and testing time isn't a concern [Butler p. 327].
+- **Never pad.** A filler option is worse than one fewer option. It cues savvy learners and wastes reading time [NBME p. 22] (see `technical-flaws.md`, TW-EXHAUSTIVE). If only one plausible distractor exists, a two-option item is better than adding a weak third [Butler p. 327], but tell the user, because two options make guessing much easier.
+- What matters is that **every distractor works**. After delivery, a distractor almost nobody chose is a candidate for replacement (see `item-analysis.md`).
 
 ## Checklist
 
@@ -114,3 +120,5 @@ One-best-answer items have one key and **three to seven distractors** [NBME p. 1
 - [ ] Options are short; no new information appears only in the options
 - [ ] Exactly one option is clearly best, and experts would agree
 - [ ] Every distractor is plausible to a learner who doesn't know the material
+- [ ] 3 options (unless the user asked for more and every extra one is plausible); no filler
+- [ ] Every option, the key included, has feedback explaining why it is or isn't best
