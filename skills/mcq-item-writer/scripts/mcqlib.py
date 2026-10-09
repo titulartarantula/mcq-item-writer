@@ -232,6 +232,38 @@ def esc(text: str) -> str:
     return html.escape(text or "", quote=True)
 
 
+_INLINE_RE = re.compile(r"\*\*(.+?)\*\*|__(.+?)__|(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])|`(.+?)`")
+
+
+def inline_runs(text: str) -> list[tuple[str, str]]:
+    """Split text into (style, text) runs for **bold**, *italic*/_italic_ and `code`. style is '', 'strong', 'em' or 'code'."""
+    runs: list[tuple[str, str]] = []
+    pos = 0
+    for mt in _INLINE_RE.finditer(text or ""):
+        if mt.start() > pos:
+            runs.append(("", text[pos:mt.start()]))
+        if mt.group(1) is not None or mt.group(2) is not None:
+            runs.append(("strong", mt.group(1) or mt.group(2)))
+        elif mt.group(3) is not None:
+            runs.append(("em", mt.group(3)))
+        else:
+            runs.append(("code", mt.group(4)))
+        pos = mt.end()
+    if pos < len(text or ""):
+        runs.append(("", text[pos:]))
+    return runs
+
+
+def inline_html(text: str) -> str:
+    """Escape text and render inline Markdown emphasis as HTML."""
+    return "".join(esc(t) if not tag else f"<{tag}>{esc(t)}</{tag}>" for tag, t in inline_runs(text))
+
+
+def strip_inline(text: str) -> str:
+    """Plain text with inline Markdown markers removed (for formats without rich text)."""
+    return "".join(t for _, t in inline_runs(text))
+
+
 def is_md_table(text: str) -> bool:
     lines = [l.strip() for l in (text or "").strip().splitlines() if l.strip()]
     return len(lines) >= 2 and all(l.startswith("|") for l in lines) and re.match(r"^\|[\s:|-]+\|$", lines[1]) is not None
@@ -249,17 +281,17 @@ def md_table_to_html(text: str) -> str:
     head = cells(lines[0])
     rows = [cells(l) for l in lines[2:]]
     out = ['<table border="1" cellpadding="4">', "<thead><tr>"]
-    out += [f"<th>{esc(c)}</th>" for c in head]
+    out += [f"<th>{inline_html(c)}</th>" for c in head]
     out.append("</tr></thead><tbody>")
     for r in rows:
-        out.append("<tr>" + "".join(f"<td>{esc(c)}</td>" for c in r) + "</tr>")
+        out.append("<tr>" + "".join(f"<td>{inline_html(c)}</td>" for c in r) + "</tr>")
     out.append("</tbody></table>")
     return "".join(out)
 
 
 def paragraphs_html(text: str) -> str:
     paras = [p.strip() for p in re.split(r"\n\s*\n", text or "") if p.strip()]
-    return "".join(f"<p>{esc(p).replace(chr(10), '<br>')}</p>" for p in paras)
+    return "".join(f"<p>{inline_html(p).replace(chr(10), '<br>')}</p>" for p in paras)
 
 
 def question_html(bank: dict, item: dict) -> str:

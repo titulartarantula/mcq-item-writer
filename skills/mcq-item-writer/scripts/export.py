@@ -6,6 +6,7 @@ Formats:
   gift        Moodle GIFT text (.gift.txt): per-option feedback, partial credit (shuffle is a quiz setting)
   qti21       IMS QTI 2.1 content package (.zip): items + assessmentTest; locked sets as linear test parts
   qti12       IMS QTI 1.2 package (.zip), Canvas-style: per-option feedback; single correct answer
+  canvas      Same package as qti12, with Canvas import steps (Classic and New Quizzes) printed after export
   csv         Spreadsheet (.csv, UTF-8 with BOM for Excel): one row per item, all metadata
   h5p         H5P Question Set (.h5p), EXPERIMENTAL: content only; target platform must already
               have H5P.QuestionSet 1.20+ and H5P.MultiChoice 1.16+ installed
@@ -35,7 +36,7 @@ from pathlib import Path
 import mcqlib as m
 
 SUFFIX = {"moodle-xml": ".moodle.xml", "gift": ".gift.txt", "qti21": ".qti21.zip", "qti12": ".qti12.zip",
-          "csv": ".csv", "h5p": ".h5p", "markdown": ".review.md"}
+          "canvas": ".canvas-qti.zip", "csv": ".csv", "h5p": ".h5p", "markdown": ".review.md"}
 
 LIMITATIONS = {
     "moodle-xml": [
@@ -53,6 +54,14 @@ LIMITATIONS = {
     "qti12": [
         "Canvas multiple-choice questions score right/wrong only; ordered-MC partial credit is not carried.",
         "Per-item shuffle is ignored by Canvas; shuffling is a quiz setting.",
+    ],
+    "canvas": [
+        "Import: Course Settings > Import Course Content > Content type 'QTI .zip file'. Canvas creates a Classic quiz.",
+        "New Quizzes: if your course import shows 'Import existing quizzes as New Quizzes', tick it; otherwise import as Classic and migrate the quiz.",
+        "Per-answer feedback appears to students after they submit, depending on the quiz's result-view settings. Check those settings so the feedback is actually shown.",
+        "Canvas ignores per-item shuffle. Turn on 'Shuffle answers' in quiz settings, except for quizzes with numeric or ordered options.",
+        "Canvas multiple-choice questions score right/wrong only; ordered-MC partial credit is not carried.",
+        "Set attempts to 1 for knowledge checks (one attempt plus feedback, not try-until-correct).",
     ],
     "csv": [],
     "h5p": [
@@ -103,15 +112,27 @@ def sub(parent, tag, text=None, **attrs):
     return el
 
 
+def add_inline(el: ET.Element, text: str) -> ET.Element:
+    """Append text to an element, turning **bold**, *italic* and `code` into child elements."""
+    for tag, run in m.inline_runs(text or ""):
+        if tag:
+            sub(el, tag, run)
+        elif len(el):
+            el[-1].tail = (el[-1].tail or "") + run
+        else:
+            el.text = (el.text or "") + run
+    return el
+
+
 def question_elements(parent: ET.Element, bank: dict, item: dict) -> None:
     """Build the question body as XHTML elements (QTI 2.1 itemBody subset) without parsing any markup."""
     for block in m.item_context(bank, item):
         for para in [p.strip() for p in re.split(r"\n\s*\n", block) if p.strip()]:
             lines = para.splitlines()
-            p = sub(parent, "p", lines[0])
+            p = add_inline(sub(parent, "p"), lines[0])
             for line in lines[1:]:
-                br = sub(p, "br")
-                br.tail = line
+                sub(p, "br")
+                add_inline(p, line)
     stem = item.get("stem", {})
     table = stem.get("data_table")
     if table:
@@ -121,12 +142,12 @@ def question_elements(parent: ET.Element, bank: dict, item: dict) -> None:
             tbl = sub(parent, "table")
             tr = sub(sub(tbl, "thead"), "tr")
             for c in cells(rows[0]):
-                sub(tr, "th", c)
+                add_inline(sub(tr, "th"), c)
             tb = sub(tbl, "tbody")
             for r in rows[2:]:
                 tr = sub(tb, "tr")
                 for c in cells(r):
-                    sub(tr, "td", c)
+                    add_inline(sub(tr, "td"), c)
         else:
             sub(parent, "pre", table)
     if item.get("media"):
@@ -160,9 +181,9 @@ def export_moodle(bank: dict, items: list[dict]) -> str:
         sub(q, "showstandardinstruction", "0")
         for opt in it["options"]:
             a = sub(q, "answer", fraction=moodle_fraction(option_weight(it, opt)), format="html")
-            sub(a, "text", m.esc(opt["text"]))
+            sub(a, "text", m.inline_html(opt["text"]))
             fb = sub(a, "feedback", format="html")
-            sub(fb, "text", m.esc(opt.get("feedback", "")))
+            sub(fb, "text", m.inline_html(opt.get("feedback", "")))
         tags = list(it.get("tags", [])) + [f"objective:{it['objective'].get('id', '')}".rstrip(":"),
                                             f"bloom:{it.get('cognitive_process')}", f"task:{it.get('task')}"]
         tg = sub(q, "tags")
@@ -196,7 +217,7 @@ def export_gift(bank: dict, items: list[dict]) -> str:
                 prefix = f"~%{moodle_fraction(w)}%"
             else:
                 prefix = "~"
-            lines.append(f"\t{prefix}{gift_escape(opt['text'])}#{gift_escape(opt.get('feedback', ''))}")
+            lines.append(f"\t{prefix}{gift_escape(m.inline_html(opt['text']))}#{gift_escape(m.inline_html(opt.get('feedback', '')))}")
         lines.append("}")
         out.append("\n".join(lines))
         out.append("")
@@ -230,7 +251,7 @@ def qti21_item(bank: dict, it: dict) -> str:
     ci = sub(body, "choiceInteraction", responseIdentifier="RESPONSE",
              shuffle="true" if it.get("shuffle", True) else "false", maxChoices="1")
     for opt in it["options"]:
-        sub(ci, "simpleChoice", opt["text"], identifier=opt["label"])
+        add_inline(sub(ci, "simpleChoice", identifier=opt["label"]), opt["text"])
     rp = sub(root, "responseProcessing")
     rc = sub(rp, "responseCondition")
     ri = sub(rc, "responseIf")
@@ -241,7 +262,7 @@ def qti21_item(bank: dict, it: dict) -> str:
     sub(sub(rp, "setOutcomeValue", identifier="FEEDBACK"), "variable", identifier="RESPONSE")
     for opt in it["options"]:
         mf = sub(root, "modalFeedback", outcomeIdentifier="FEEDBACK", identifier=opt["label"], showHide="show")
-        sub(mf, "p", opt.get("feedback", ""))
+        add_inline(sub(mf, "p"), opt.get("feedback", ""))
     return to_string(root)
 
 
@@ -318,7 +339,7 @@ def export_qti12(bank: dict, items: list[dict]) -> bytes:
         rc = sub(rl, "render_choice", shuffle="Yes" if it.get("shuffle", True) else "No")
         for o in it["options"]:
             lab = sub(rc, "response_label", ident=f"{iid}_{o['label']}")
-            sub(sub(lab, "material"), "mattext", o["text"], texttype="text/plain")
+            sub(sub(lab, "material"), "mattext", m.strip_inline(o["text"]), texttype="text/plain")
         rp = sub(item, "resprocessing")
         sub(sub(rp, "outcomes"), "decvar", maxvalue="100", minvalue="0", varname="SCORE", vartype="Decimal")
         for o in it["options"]:
@@ -331,7 +352,7 @@ def export_qti12(bank: dict, items: list[dict]) -> bytes:
         sub(cond, "setvar", "100", action="Set", varname="SCORE")
         for o in it["options"]:
             fb = sub(item, "itemfeedback", ident=f"{iid}_{o['label']}_fb")
-            sub(sub(sub(fb, "flow_mat"), "material"), "mattext", o.get("feedback", ""), texttype="text/plain")
+            sub(sub(sub(fb, "flow_mat"), "material"), "mattext", m.strip_inline(o.get("feedback", "")), texttype="text/plain")
 
     man = ET.Element("manifest", {"xmlns": "http://www.imsglobal.org/xsd/imscp_v1p1",
                                   "identifier": f"MANIFEST-{uuid.uuid4().hex[:12]}"})
@@ -381,7 +402,7 @@ def export_csv(bank: dict, items: list[dict]) -> str:
 # ------------------------------------------------------------------------ h5p
 
 def _h5p_html(text: str) -> str:
-    return f"<div>{m.esc(text)}</div>\n"
+    return f"<div>{m.inline_html(text)}</div>\n"
 
 
 def export_h5p(bank: dict, items: list[dict]) -> bytes:
@@ -470,13 +491,20 @@ def export_markdown(bank: dict, items: list[dict]) -> str:
         lint = ", ".join(sorted({e["code"] for e in audit.get("lint", []) if not e.get("resolved")})) or "none"
         sme = it.get("sme_review") or {}
         claims = "; ".join(sme.get("claims_to_verify", [])) or "none"
-        out += ["", f"Audit: cover-the-options {cto} · lint: {lint} · SME check: {claims}", ""]
+        out += ["", f"Audit: cover-the-options {cto} · lint: {lint} · SME check: {claims}"]
+        for w in audit.get("warnings", []):
+            out.append(f"- ⚠ {w}")
+        out.append("")
     adm = bank.get("administration")
     if adm:
         out += ["## Administration notes", ""]
         for k, v in adm.items():
-            v = "; ".join(v) if isinstance(v, list) else v
-            out.append(f"- **{k.replace('_', ' ').capitalize()}:** {v}")
+            label = k.replace('_', ' ').capitalize()
+            if isinstance(v, list):
+                out.append(f"- **{label}:**")
+                out += [f"  - {x}" for x in v]
+            else:
+                out.append(f"- **{label}:** {v}")
         out.append("")
     return "\n".join(out)
 
@@ -484,7 +512,7 @@ def export_markdown(bank: dict, items: list[dict]) -> str:
 # ----------------------------------------------------------------------- main
 
 EXPORTERS = {"moodle-xml": export_moodle, "gift": export_gift, "qti21": export_qti21, "qti12": export_qti12,
-             "csv": export_csv, "h5p": export_h5p, "markdown": export_markdown}
+             "canvas": export_qti12, "csv": export_csv, "h5p": export_h5p, "markdown": export_markdown}
 
 
 def main(argv: list[str] | None = None) -> int:

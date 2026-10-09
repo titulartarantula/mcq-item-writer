@@ -190,6 +190,21 @@ class Analyze(unittest.TestCase):
         self.assertIn("D", by["DEADD"]["options"])
         self.assertIn("NONFUNCTIONAL_DISTRACTOR", by["DEADD"]["flags"])
 
+    def test_regrade_impact(self):
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            ar.main([str(self.dir / "wide.csv"), "--bank", str(self.dir / "bank.json"), "--format", "json",
+                     "--rekey", "MISKEY=C,TWO=A|B"])
+        rg = json.loads(out.getvalue())["regrade"]
+        miskey = rg["items"]["MISKEY"]
+        chose = {r["MISKEY"] for r in self.rows}
+        n_c = sum(1 for r in self.rows if r["MISKEY"] == "C")
+        n_b = sum(1 for r in self.rows if r["MISKEY"] == "B")
+        self.assertEqual(miskey["gain"], n_c)      # everyone who chose the true answer gains
+        self.assertEqual(miskey["lose"], n_b)      # everyone who chose the old key loses
+        self.assertEqual(rg["items"]["TWO"]["lose"], 0)   # accepting both never takes points away
+        self.assertGreater(rg["kr20_after"], rg["kr20_before"])
+
     def test_small_n_caution(self):
         write_wide(self.rows[:20], self.dir / "small.csv")
         out = io.StringIO()

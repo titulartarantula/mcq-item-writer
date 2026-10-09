@@ -23,8 +23,8 @@ Work out which mode the request needs, then read the listed references **before*
 
 | Mode | Use when the user... | Read first |
 |---|---|---|
-| **Write** | wants new items from objectives or content | `writing-rules.md`, `technical-flaws.md`, `learning-and-feedback.md`, `scenarios.md`, `lead-in-bank.md` |
-| **Review** | gives existing items to check or improve | `technical-flaws.md`, `item-anatomy.md`, `formats.md` |
+| **Write** | wants new items from objectives or content | `writing-rules.md`, `technical-flaws.md`, `learning-and-feedback.md`, `scenarios.md`; from `lead-in-bank.md` only the sections for the tasks you're testing |
+| **Review** | gives existing items to check or improve | `technical-flaws.md`, `item-anatomy.md`, `formats.md`, `learning-and-feedback.md`; `lead-in-bank.md` sections when rewriting lead-ins |
 | **Analyze** | has learner response data or item statistics | `item-analysis.md` |
 | **Blueprint** | needs a test plan, or wants many items across many objectives | `blueprint.md`, `cognitive-level.md` |
 
@@ -50,16 +50,28 @@ Collect a brief before writing. Calling projects (e-learning builds, course modu
 | Learning objectives | derive from the source content and show them to the user | Every item tests one objective |
 | Source content | none: write from general knowledge **and flag every factual claim for expert review** | Items must be correct. Grounding is what makes them trustworthy |
 | Learner level | ask; this one usually matters | Sets how typical or complex scenarios should be |
-| `purpose`: assessment / learning / both | `both` | Distractor policy and feedback release |
+| `purpose`: assessment / learning / both | infer it: ungraded practice or a knowledge check → `learning`; graded quiz or test → `both`; certification or placement → `assessment`. If unclear, `both` | Distractor policy and feedback release |
 | `assessment_type`: formative / summative | `formative` | Recall/application mix |
 | Stakes | `low` | Rigour of review; integrity advice |
 | Number of items | 1–2 per objective | |
 | Options per item | 4 (key + 3 distractors) | User's choice. Mention 3 as an option when `purpose` is `learning` or testing time is tight (see `item-anatomy.md`). Stored as `bank.defaults.options_per_item` |
-| Platform / export format | JSON + Markdown review sheet | Which exporter to run |
+| Platform / export format | JSON + Markdown review sheet | Which exporter to run. For Canvas use `--format canvas` (see Platform notes) |
 
 **Offer ordered (diagnostic) MC** when `purpose` is `learning` or `both` **and** at least one objective covers a concept learners typically misunderstand in recognisable stages (e.g. correlation vs causation, sampling bias, supply and demand, threat models). Ask once per batch, naming the objectives that qualify, using the prompt in `ordered-mc.md`. Never switch to ordered MC without the user agreeing. If they accept, confirm the levels of understanding (the progression) with them before writing those items.
 
 If the user asks for a discouraged format ("select all that apply", true/false, "A and B only", "let them try again until correct"), follow the handling table in `formats.md`: explain the problem in a sentence, offer the better alternative, and comply with warnings if they insist (except combination formats, which you convert).
+
+---
+
+## Talking to the user
+
+The files carry the detail. The chat reply is for a busy teacher or designer deciding what to do next. Write it for them:
+
+- **Plain language.** No flaw codes (ID-*, TW-*, X-*), schema field names, or page citations in the chat reply unless the user asks. Codes and citations belong in the review sheet and the JSON, where reviewers look things up.
+- **Most important first.** For reviews and analyses, group findings as **Must fix** (wrong or doubtful key, two defensible answers, a question that can't be answered from its stem), **Should fix** (answer clues, confusing wording, weak distractors), and **Optional** (polish). One line per problem: which question, what's wrong, what to do.
+- **Point to the files** rather than pasting long item text. Show at most one revised item inline as an example if it helps.
+- **End with decisions only the user can make** (e.g. "Is Q4 meant to test equal sample sizes or normality?"), and the defaults you assumed.
+- Aim for a reply that fits on one screen. If it doesn't, move detail into the review sheet.
 
 ---
 
@@ -132,22 +144,18 @@ Treat findings as prompts for judgment, not verdicts. A flagged repeated word ma
 
 Use this when the user supplies existing items in any format (pasted text, a document, an LMS export).
 
-1. Convert each item to the schema as faithfully as possible. Keep the original wording in `notes`.
+1. Convert each item to the schema as faithfully as possible, keeping the original wording in `notes`. Originals often won't validate (no feedback, open lead-ins). That's expected: for missing feedback write `(none in original)` so the linter reports it. Save it as `<name>-original.items.json`, lint it, and treat the findings as your diagnosis. The revised bank is a separate file that must validate.
 2. **Cover-the-options check first:** read each stem, answer it, *then* look at the options. Note mismatches.
 3. Run the linter, then do the judgment checks from Write mode step 9.
-4. For each item report:
-   - its flaws by code, each with a one-line explanation and the source page reference from `technical-flaws.md` (e.g. `[NBME p. 23]`)
-   - a revised version, showing what changed and why
-   - feedback for every option if the original had none
-5. Lead with the most serious problems:
+4. Write the revised items as a validated bank (feedback on every option) and generate the review sheet. In the sheet, record each item's flaws with their code and source page from `technical-flaws.md` (e.g. `[NBME p. 23]`) and what changed.
+5. **Check your own revisions** with the linter and the judgment checks. A revision must not add new problems: a key that's now the longest option, an open lead-in left in place, a distractor that could be argued correct, or a different testing point.
+6. In the chat reply, follow "Talking to the user": Must fix / Should fix / Optional, plain language. Must fix covers, in this order:
    1. wrong or doubtful keys
    2. more than one defensible answer
-   3. lead-ins that fail the cover-the-options test
-   4. testwise clues
-   5. style issues
+   3. questions that can't be answered from the stem
 
-   Don't bury a miskey under ten wording notes.
-6. If many items share one flaw (e.g. all recall, or all keys in position C), say so once at batch level.
+   Don't bury a miskey under wording notes.
+7. If many items share one flaw (e.g. all recall, or all keys in position C), say so once at batch level.
 
 Respect the author's intent and content. Revise the item's form, but don't change *what* it tests unless the testing point itself is the problem, and then ask.
 
@@ -172,7 +180,19 @@ Run `--help` for the input formats it accepts (per-learner response matrix, or L
 Report flags as **prompts for expert review, never automatic verdicts**. For each flagged item:
 - explain the pattern in plain language
 - give the most likely cause
-- recommend an action: rekey, revise distractor, rewrite, drop from scoring, or keep
+- recommend an action: rekey, accept both answers, revise distractor, rewrite, drop from scoring, or keep
+
+**Regrades.** When an item looks miskeyed or has two defensible answers, show what each fix would do to last term's scores before anyone decides:
+
+```bash
+python <skill-dir>/scripts/analyze_responses.py <responses.csv> --key <keys> --rekey "Q4=D,Q11=B|D"
+```
+
+This reports, per item, how many learners would **gain and lose** a point, plus the mean and reliability before and after. Accepting both answers (`B|D`) never takes points away. Rekeying moves points between learners. Both directions matter to the instructor.
+
+**Reshaping LMS exports.** The script reads one row per learner with a column per question (or one row per response). LMS exports such as Canvas's Student Analysis report usually have extra columns and question text in the headers. Reshape them first: keep a learner id plus one column per question, holding the chosen option letter. Tell the user what you dropped.
+
+**Keep the data for next time.** If there's no bank, offer to save a minimal one (ids, keys, stats via `--write`) so next term's run can check for drift.
 
 Warn about unstable statistics with fewer than about 30 learners. Point out that changing distractors creates a new item whose statistics start over. With `--write`, the statistics are stored in each item's `stats`, so the next run can check for drift.
 
@@ -231,14 +251,29 @@ Purpose: <purpose> · Type: <formative/summative> · Learners: <level> · Items:
 Audit: cover-the-options ✓ · lint: <none | codes> · SME check: <claims or "none">
 ```
 
-**Chat summary.** Keep it short:
+**Chat summary.** Follow "Talking to the user". Include:
 - what you produced and where
 - the defaults you assumed
 - items needing expert verification, with the specific claims
 - unresolved warnings
 - the distribution of people and roles across the batch, if scenarios include people
 
-**Administration note.** Whenever the output is a quiz, test, or bank (not just one or two loose items), include the administration note from `administration.md` in the review sheet and in the bank's `administration` field. Cover: what to tell learners, question order, shuffling, feedback release, attempts (one attempt plus feedback, not "try until correct"), integrity measures suited to the stakes and platform, and running item analysis afterwards.
+**Administration note.** Whenever the output is a quiz, test, or bank (not just one or two loose items), include the administration note from `administration.md` in the review sheet and in the bank's `administration` field. Cover: what to tell learners, question order, shuffling, feedback release, attempts (one attempt plus feedback, not "try until correct"), integrity measures suited to the stakes and platform, and running item analysis afterwards. In the chat reply, give only the two or three settings the user must actually change.
+
+---
+
+## Platform notes
+
+**Canvas** (Classic Quizzes and New Quizzes):
+- Export with `--format canvas`. This builds a QTI 1.2 package and prints the import steps for both quiz engines. Pass the steps on to the user.
+- Per-answer feedback shows **after the learner submits**, depending on the quiz's result-view settings. So for Canvas, release feedback at the end of the attempt, and tell the user which setting controls it.
+- Canvas ignores per-item shuffle. Spread key positions across A–D yourself (the linter checks this). Tell the user to turn on "Shuffle answers" unless the quiz has numeric or ordered options.
+- Recommend **1 attempt** for knowledge checks. Canvas practice quizzes often default to unlimited attempts with answers shown, which becomes try-until-correct.
+- Canvas multiple-choice questions can't give partial credit, so ordered-MC partial credit is lost. Mention it if ordered MC was used.
+
+**Moodle**: use `moodle-xml` (keeps per-item shuffle and partial credit), or `gift` for quick text editing. **Brightspace / D2L**: `qti21`, or `qti12` if that fails. **H5P**: experimental (see the exporter's notes).
+
+Untested imports: say so. The exporters produce schema-valid files, but each LMS has quirks. Suggest a test import into a sandbox course before the real one.
 
 ---
 
@@ -254,7 +289,7 @@ purpose: both            # assessment | learning | both
 assessment_type: formative
 items_per_objective: 2
 options_per_item: 4       # default; 3 is a good choice for learning-focused checks
-export: [gift, h5p]
+export: [canvas]           # or gift, moodle-xml, qti21, h5p, csv
 out_dir: build/assessment/
 ```
 

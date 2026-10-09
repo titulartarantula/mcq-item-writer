@@ -76,6 +76,7 @@ See `cognitive-level.md` for when a recall item is acceptable.
 
    If you can't explain why someone would choose a distractor, replace it.
 5. If the user chose **ordered MC** for this objective, build the options from the confirmed progression instead (see `ordered-mc.md`).
+6. **Text shared by every option isn't tested.** Move it into the stem (NBME's fix for long options [NBME p. 25]). But if that shared step is part of what you want to test (e.g. "thank the student" in a correct response), make it *differ* across options so choosing it requires knowing it. For example, some options open by thanking the student and some don't, with the key's other elements also correct.
 
 ## Rule 5: Review every item for technical flaws
 

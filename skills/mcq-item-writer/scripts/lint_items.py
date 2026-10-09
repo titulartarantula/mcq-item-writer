@@ -58,6 +58,8 @@ TRIADS = [
      {"no change", "unchanged", "remain unchanged", "remains unchanged", "same", "stay the same", "stays the same", "not change"}),
 ]
 THIN_FEEDBACK_RE = re.compile(r"^\s*(correct|incorrect|wrong|right|yes|no|true|false)[.!]?\s*$", re.I)
+# Sentinel used when converting existing items that had no feedback (Review mode), plus common placeholders.
+PLACEHOLDER_FEEDBACK_RE = re.compile(r"\(none in original\)|\bTODO\b|\bTBD\b|lorem ipsum|no feedback (was )?provided", re.I)
 
 NUM_RE = r"[-+]?\d+(?:[.,]\d+)?"
 RANGE_RE = re.compile(rf"^\s*(?:from\s+)?({NUM_RE})\s*%?\s*(?:-|–|—|to)\s*({NUM_RE})\s*%?\s*$", re.I)
@@ -202,8 +204,15 @@ def lint_item(item: dict, bank: dict) -> list[Finding]:
             add("X-FEEDBACK-MISSING", "error", "No feedback.", o.get("label"))
         elif THIN_FEEDBACK_RE.match(fb) or m.word_count(fb) < 8:
             add("X-FEEDBACK-MISSING", "error", "Feedback too thin; explain why this option is or isn't best.", o.get("label"))
+        elif PLACEHOLDER_FEEDBACK_RE.search(fb):
+            add("X-FEEDBACK-MISSING", "error", "Placeholder feedback; the original item had none. Write real feedback.", o.get("label"))
         if not o.get("correct") and not o.get("misconception"):
             add("X-FEEDBACK-MISSING", "info", "Distractor has no 'misconception' recorded.", o.get("label"))
+    fbs = [re.sub(r"\s+", " ", (o.get("feedback") or "").strip().lower()) for o in opts]
+    dupes = {fb for fb in fbs if fb and fbs.count(fb) > 1}
+    if dupes:
+        labels = [o.get("label") for o, fb in zip(opts, fbs) if fb in dupes]
+        add("X-FEEDBACK-MISSING", "error", f"Options {', '.join(labels)} share identical feedback; each option needs its own explanation.")
 
     # --- numeric options should not shuffle
     if _all_numeric(opts) and item.get("shuffle") is True:
@@ -376,14 +385,21 @@ def lint_bank(bank: dict) -> tuple[list[Finding], bool]:
         except Exception as exc:  # keep linting other items
             findings.append(Finding(it.get("id", "?"), "SCHEMA-INVALID", "error", f"Could not lint item: {exc}"))
 
-    # X-KEY-POSITION across fixed-order items
-    fixed = [it for it in items if it.get("shuffle") is False and m.key_option(it)]
-    if len(fixed) >= 4:
-        pos = Counter(m.key_option(it).get("label") for it in fixed)
+    # X-KEY-POSITION across all items. Many platforms (Canvas, Moodle via GIFT) ignore the per-item shuffle
+    # flag and only shuffle if the quiz setting is on, so authored positions are often what learners see.
+    keyed = [it for it in items if m.key_option(it)]
+    if len(keyed) >= 4:
+        pos = Counter(m.key_option(it).get("label") for it in keyed)
         top, n = pos.most_common(1)[0]
-        if n / len(fixed) > 0.5:
+        n_opts = max(len(it.get("options", [])) for it in keyed)
+        unused = [chr(ord("A") + i) for i in range(n_opts) if chr(ord("A") + i) not in pos]
+        if n / len(keyed) > 0.5:
             findings.append(Finding("BANK", "X-KEY-POSITION", "warning",
-                                    f"{n} of {len(fixed)} fixed-order items have the key in position {top}; spread key positions."))
+                                    f"{n} of {len(keyed)} items have the key in position {top}; spread key positions "
+                                    "(platforms such as Canvas ignore per-item shuffle unless the quiz setting is on)."))
+        elif len(keyed) >= 2 * n_opts and unused:
+            findings.append(Finding("BANK", "X-KEY-POSITION", "warning",
+                                    f"No item has its key in position {', '.join(unused)}; spread key positions."))
 
     findings.sort(key=lambda x: (x.item == "BANK", x.item, SEVERITY_ORDER[x.severity], x.code))
     return findings, full

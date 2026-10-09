@@ -6,7 +6,9 @@
       "name": "write-canvas-ta-integrity",
       "prompt": "I'm building a Canvas module for first-time grad TAs on handling suspected academic misconduct. The module text is in evals/files/ta-academic-integrity-module.md. Can you write 6 knowledge-check questions for the end of the module that I can import into Canvas? It's a formative check, not graded.",
       "expected_output": "Six scenario-based one-best-answer items grounded in the module, 4 options each, explanatory feedback on every option, no NOTA/AOTA/negative lead-ins, a Canvas-importable QTI package, no invented policy, and delivery advice suited to a formative check.",
-      "files": ["evals/files/ta-academic-integrity-module.md"],
+      "files": [
+        "evals/files/ta-academic-integrity-module.md"
+      ],
       "expectations": [
         "Exactly 6 questions are produced",
         "Every question has exactly one correct option and 4 options (or states a reason for a different count)",
@@ -15,7 +17,11 @@
         "No question uses 'none of the above', 'all of the above', or a negative lead-in (EXCEPT / NOT / LEAST)",
         "A file importable into Canvas is produced (a QTI .zip package) that contains all 6 questions with their answer keys",
         "The questions and feedback introduce no institutional policy specifics that are absent from the module (e.g. new deadlines, penalties, offices, or procedures)",
-        "The response gives Canvas delivery advice suited to a formative check (e.g. feedback display, single attempt with feedback rather than try-until-correct)"
+        "The response gives Canvas delivery advice suited to a formative check (e.g. feedback display, single attempt with feedback rather than try-until-correct)",
+        "No question's correct answer is the longest of its options (by word count)",
+        "Correct answers are spread across positions: no single letter is the key for more than 3 of the 6 questions",
+        "No correct answer reuses a distinctive phrase of 5 or more consecutive words from the module text",
+        "Every distractor is a plausible, distinct choice: none is a near-duplicate of another option or obviously absurd"
       ]
     },
     {
@@ -23,7 +29,9 @@
       "name": "review-stats-quiz",
       "prompt": "A colleague drafted this week-5 quiz for our intro stats course: evals/files/stats-quiz-draft.md. Can you review it, tell me what's wrong, and give me fixed versions? It counts for 2% of the final grade.",
       "expected_output": "Catches the Q3 miskey first, identifies the planted flaws (negative lead-in, NOTA and long key, combination/AOTA format, overlapping numeric options, open lead-ins, vague/absolute terms), leaves Q7 essentially intact, and supplies revised items with per-option feedback.",
-      "files": ["evals/files/stats-quiz-draft.md"],
+      "files": [
+        "evals/files/stats-quiz-draft.md"
+      ],
       "expectations": [
         "Identifies that Q3 is miskeyed: the keyed causal conclusion (a) is wrong and the association option (b) is correct",
         "Presents the Q3 miskey as the most serious problem (ahead of wording or format issues)",
@@ -32,7 +40,9 @@
         "Flags Q4's combination / 'all of the above' format and rewrites it as a single-best-answer item",
         "Flags Q6's overlapping numeric options (68% also falls inside '50% to 70%' and 'more than 60%')",
         "Recognises Q7 as well constructed and keeps it, or changes it only minimally",
-        "Provides revised versions of the flawed questions, each with feedback for every option"
+        "Provides revised versions of the flawed questions, each with feedback for every option",
+        "The response opens with a short, severity-ordered summary (e.g. must fix / should fix) in plain language, with no internal flaw codes in that summary",
+        "The revised questions introduce no new flaws (no key that is the longest option, no open or negative lead-in, no distractor that could reasonably be argued correct)"
       ]
     },
     {
@@ -40,7 +50,10 @@
       "name": "analyze-canvas-results",
       "prompt": "We ran a 12-question multiple-choice quiz in Canvas last term with 140 students. I exported the responses (evals/files/quiz-responses.csv) and the answer key (evals/files/quiz-key.csv). Which questions should I fix or drop before I reuse it this term?",
       "expected_output": "Flags Q4 as a likely miskey, Q11 as possibly having two defensible answers, Q7's unused distractor, and Q9 as too easy; leaves healthy items alone; reports reliability; recommends expert review rather than automatic deletion.",
-      "files": ["evals/files/quiz-responses.csv", "evals/files/quiz-key.csv"],
+      "files": [
+        "evals/files/quiz-responses.csv",
+        "evals/files/quiz-key.csv"
+      ],
       "expectations": [
         "Identifies Q4 as likely miskeyed (strong students chose a different option; negative discrimination)",
         "Identifies Q11 as possibly having two defensible answers (strong students split between the key D and option B)",
@@ -48,7 +61,10 @@
         "Identifies Q9 as too easy to be informative",
         "Does not recommend fixing or dropping well-performing items such as Q1, Q5, or Q12",
         "Reports a test-level reliability estimate (e.g. KR-20 or Cronbach's alpha)",
-        "Frames the flagged items as needing content review before deciding (e.g. check the Q4 key against the question) rather than deleting them automatically"
+        "Frames the flagged items as needing content review before deciding (e.g. check the Q4 key against the question) rather than deleting them automatically",
+        "Reports what rekeying Q4 would do to last term's scores in both directions (how many students gain and how many lose a point)",
+        "Treats Q11 as a possible two-answer item to check (e.g. accept both, or revise), not as a simple miskey",
+        "Reports test reliability of about .70 (between .68 and .72) under the original key"
       ],
       "ground_truth": "Generated by a seeded simulation: Q4 keyed C but the defensible answer is D; Q7 distractor A chosen by <1%; Q9 near-universal correct; Q11 strong students split between key D and B; other items healthy."
     }

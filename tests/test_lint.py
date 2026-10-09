@@ -32,10 +32,10 @@ def base_item(**over):
         "stem": {"scenario": "A technician in a small data room hears a cooling fan grinding. The rack temperature display reads 41 °C and rising.",
                  "lead_in": "Which of the following is the most appropriate first action?"},
         "options": [
-            {"label": "A", "text": "Shut down the affected rack safely", "correct": True, "feedback": FB, "misconception": None},
-            {"label": "B", "text": "Replace the fan while the rack runs", "correct": False, "feedback": FB, "misconception": "x"},
-            {"label": "C", "text": "Log a ticket for the next maintenance window", "correct": False, "feedback": FB, "misconception": "x"},
-            {"label": "D", "text": "Open the room door to improve airflow", "correct": False, "feedback": FB, "misconception": "x"},
+            {"label": "A", "text": "Shut down the affected rack safely", "correct": True, "feedback": FB + " (A)", "misconception": None},
+            {"label": "B", "text": "Replace the fan while the rack runs", "correct": False, "feedback": FB + " (B)", "misconception": "x"},
+            {"label": "C", "text": "Log a ticket for the next maintenance window", "correct": False, "feedback": FB + " (C)", "misconception": "x"},
+            {"label": "D", "text": "Open the room door to improve airflow", "correct": False, "feedback": FB + " (D)", "misconception": "x"},
         ],
         "shuffle": True,
         "audit": {"cover_the_options": {"passed": True, "stem_only_answer": "Shut it down."}, "lint": [], "warnings": []},
@@ -179,6 +179,16 @@ class FlawCodes(unittest.TestCase):
     def test_thin_feedback(self):
         self.assertIn("X-FEEDBACK-MISSING", self.mutate(lambda it: it["options"][1].update(feedback="Incorrect.")))
 
+    def test_duplicate_feedback(self):
+        def f(it):
+            for o in it["options"]:
+                o["feedback"] = FB
+        self.assertIn("X-FEEDBACK-MISSING", self.mutate(f))
+
+    def test_placeholder_feedback(self):
+        self.assertIn("X-FEEDBACK-MISSING", self.mutate(lambda it: it["options"][2].update(
+            feedback="(none in original) This option was converted from the draft without any feedback.")))
+
     def test_cover_the_options_failed(self):
         self.assertIn("X-COVER-THE-OPTIONS", self.mutate(lambda it: it["audit"]["cover_the_options"].update(passed=False)))
 
@@ -201,6 +211,21 @@ class BankLevel(unittest.TestCase):
             items.append(it)
         findings, _ = lint_items.lint_bank(bank_with(*items))
         self.assertTrue(any(f.code == "X-KEY-POSITION" and f.item == "BANK" for f in findings))
+
+    def test_key_position_bias_even_when_shuffled(self):
+        items = [base_item(id=f"T-{i}", shuffle=True) for i in range(6)]
+        findings, _ = lint_items.lint_bank(bank_with(*items))
+        self.assertTrue(any(f.code == "X-KEY-POSITION" and f.item == "BANK" for f in findings))
+
+    def test_key_positions_balanced_no_warning(self):
+        items = []
+        for i, k in enumerate("ABCDABCD"):
+            it = base_item(id=f"T-{i}")
+            for o in it["options"]:
+                o["correct"] = o["label"] == k
+            items.append(it)
+        findings, _ = lint_items.lint_bank(bank_with(*items))
+        self.assertFalse(any(f.code == "X-KEY-POSITION" for f in findings))
 
     def test_duplicate_ids(self):
         findings, _ = lint_items.lint_bank(bank_with(base_item(), base_item()))

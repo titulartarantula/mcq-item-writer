@@ -137,7 +137,13 @@ def pearson(x: list[float], y: list[float]) -> float | None:
     return sum((a - mx) * (b - my) for a, b in zip(x, y)) / math.sqrt(sxx * syy)
 
 
-def analyse(learners, items, resp, keys, bank, group_pct, previous):
+def accepted(key: str | None) -> set[str]:
+    """A key may list several accepted answers, e.g. 'B|D' (as after a regrade that accepts both)."""
+    return {k.strip().upper() for k in re.split(r"[|/;]", key or "") if k.strip()}
+
+
+def normalise_choices(learners, items, resp, bank):
+    """Return (choice[learner][item] -> label or None, scored_mode)."""
     by_id = {it["id"]: it for it in (bank or {}).get("items", [])}
     scored_mode = all(v.strip() in {"0", "1", ""} for lr in resp.values() for v in lr.values())
 
@@ -156,13 +162,61 @@ def analyse(learners, items, resp, keys, bank, group_pct, previous):
                     return o["label"]
         return v.upper()
 
-    choice = {l: {i: normalise(i, resp[l].get(i, "")) for i in items} for l in learners}
+    return {l: {i: normalise(i, resp[l].get(i, "")) for i in items} for l in learners}, scored_mode
+
+
+def score(choice, scored_mode, keys, l, i) -> int:
+    c = choice[l][i]
+    if scored_mode:
+        return 1 if c == "1" else 0
+    return 1 if c is not None and c in accepted(keys.get(i)) else 0
+
+
+def kr20(learners, items, X) -> float | None:
+    N, k = len(learners), len(items)
+    if N == 0 or k < 2:
+        return None
+    totals = [sum(X[l][i] for i in items) for l in learners]
+    mean = sum(totals) / N
+    var = sum((t - mean) ** 2 for t in totals) / N
+    pq = sum((p := sum(X[l][i] for l in learners) / N) * (1 - p) for i in items)
+    return (k / (k - 1)) * (1 - pq / var) if var > 0 else None
+
+
+def regrade_impact(learners, items, resp, bank, old_keys, new_keys) -> dict:
+    """What changes for learners if the keys in new_keys replace old_keys (e.g. rekey Q4=D, or accept B|D)."""
+    choice, scored_mode = normalise_choices(learners, items, resp, bank)
+    if scored_mode:
+        return {"error": "Regrading needs the chosen options, not 0/1 scores."}
+    merged = dict(old_keys)
+    merged.update(new_keys)
+    scored = [i for i in items if i in merged]
+    old_scored = [i for i in items if i in old_keys]
+    Xo = {l: {i: score(choice, False, old_keys, l, i) for i in old_scored} for l in learners}
+    Xn = {l: {i: score(choice, False, merged, l, i) for i in scored} for l in learners}
+    per_item = {}
+    for i in new_keys:
+        if i not in items:
+            continue
+        gain = sum(1 for l in learners if Xn[l][i] > Xo[l].get(i, 0))
+        lose = sum(1 for l in learners if Xn[l][i] < Xo[l].get(i, 0))
+        per_item[i] = {"old_key": old_keys.get(i), "new_key": new_keys[i], "gain": gain, "lose": lose,
+                       "unchanged": len(learners) - gain - lose}
+    changed = sum(1 for l in learners if sum(Xn[l].values()) != sum(Xo[l].values()))
+    old_total = [sum(Xo[l].values()) for l in learners]
+    new_total = [sum(Xn[l].values()) for l in learners]
+    r_old, r_new = kr20(learners, old_scored, Xo), kr20(learners, scored, Xn)
+    return {"items": per_item, "learners_with_changed_score": changed,
+            "mean_before": round(sum(old_total) / len(learners), 2), "mean_after": round(sum(new_total) / len(learners), 2),
+            "kr20_before": None if r_old is None else round(r_old, 3), "kr20_after": None if r_new is None else round(r_new, 3)}
+
+
+def analyse(learners, items, resp, keys, bank, group_pct, previous):
+    by_id = {it["id"]: it for it in (bank or {}).get("items", [])}
+    choice, scored_mode = normalise_choices(learners, items, resp, bank)
 
     def correct(l, i) -> int:
-        c = choice[l][i]
-        if scored_mode:
-            return 1 if c == "1" else 0
-        return 1 if c is not None and c == keys.get(i) else 0
+        return score(choice, scored_mode, keys, l, i)
 
     missing_keys = [] if scored_mode else [i for i in items if i not in keys]
     items_scored = [i for i in items if scored_mode or i in keys]
@@ -235,8 +289,9 @@ def _flag(res: dict, prev_p: float | None) -> None:
         flags.append("TOO_HARD")
     opts = res.get("options")
     if opts and key:
-        k_high = opts.get(key, {}).get("high", 0)
-        dis = {lab: v for lab, v in opts.items() if lab != key}
+        acc = accepted(key)
+        k_high = sum(opts.get(a, {}).get("high", 0) for a in acc)
+        dis = {lab: v for lab, v in opts.items() if lab not in acc}
         if d is not None and d < 0 and any(v["high"] > k_high for v in dis.values()):
             flags.append("POSSIBLE_MISKEY")
             best = max(dis.items(), key=lambda kv: kv[1]["high"])[0]
@@ -295,9 +350,17 @@ def report_text(summary, results, markdown=False) -> str:
                 L.append(f"Key: {r.get('key')}")
             if "options" in r:
                 labs = list(r["options"])
-                L.append("        " + "  ".join(f"{(l + ('*' if l == r.get('key') else '')):>5}" for l in labs))
-                for grp in ("high", "low", "total"):
-                    L.append(f"  {grp:<6}" + "  ".join(f"{round(r['options'][l][grp] * 100):>5}" for l in labs))
+                acc = accepted(r.get("key"))
+                heads = [l + ("*" if l in acc else "") for l in labs]
+                if markdown:
+                    L += ["", "| % choosing | " + " | ".join(heads) + " |", "|---" * (len(labs) + 1) + "|"]
+                    for grp in ("high", "low", "total"):
+                        L.append(f"| {grp} | " + " | ".join(str(round(r["options"][l][grp] * 100)) for l in labs) + " |")
+                    L.append("")
+                else:
+                    L.append("        " + "  ".join(f"{h:>5}" for h in heads))
+                    for grp in ("high", "low", "total"):
+                        L.append(f"  {grp:<6}" + "  ".join(f"{round(r['options'][l][grp] * 100):>5}" for l in labs))
             for fl in r["flags"]:
                 L.append(f"  - {fl}: {FLAG_TEXT[fl]}")
             for note in r["notes"]:
@@ -311,6 +374,20 @@ def report_text(summary, results, markdown=False) -> str:
     return "\n".join(L) + "\n"
 
 
+def report_regrade(rg: dict, markdown=False) -> str:
+    if "error" in rg:
+        return f"\nRegrade: {rg['error']}\n"
+    L = ["", "## Regrade impact (what-if)" if markdown else "REGRADE IMPACT (what-if)"]
+    for i, v in rg["items"].items():
+        L.append(f"- {i}: key {v['old_key']} -> {v['new_key']}: {v['gain']} learner(s) gain a point, "
+                 f"{v['lose']} lose a point, {v['unchanged']} unchanged")
+    L.append(f"- Learners whose total changes: {rg['learners_with_changed_score']} | mean {rg['mean_before']} -> {rg['mean_after']} | "
+             f"KR-20 {fmt_num(rg['kr20_before'])} -> {fmt_num(rg['kr20_after'])}")
+    L.append("Accepting both answers (e.g. B|D) avoids taking points away; rekeying moves points between learners. "
+             "Decide after a content expert has checked the item.")
+    return "\n".join(L) + "\n"
+
+
 # ----------------------------------------------------------------------------- main
 
 def main(argv: list[str] | None = None) -> int:
@@ -319,6 +396,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--bank", help="Item bank JSON (supplies keys, option text, targets, ordered-MC levels)")
     ap.add_argument("--key", help="Keys as 'ID=B,ID2=C' or a CSV file with item,key columns")
     ap.add_argument("--groups", type=float, default=27, help="High/Low group size as a percentage (default 27)")
+    ap.add_argument("--rekey", help="What-if regrade, e.g. 'Q4=D' or 'Q11=B|D' (accept both). Reports who gains and "
+                                    "loses a point and the reliability before/after; the main analysis uses the original keys")
     ap.add_argument("--previous", help="An earlier bank JSON whose items have stats.p, for drift checks")
     ap.add_argument("--format", choices=["text", "markdown", "json"], default="text")
     ap.add_argument("--write", action="store_true", help="Store stats in the bank's items (needs --bank)")
@@ -356,10 +435,17 @@ def main(argv: list[str] | None = None) -> int:
 
     summary, results = analyse(learners, items, resp, keys, bank, args.groups, previous)
 
+    regrade = regrade_impact(learners, items, resp, bank, keys, parse_keys(args.rekey)) if args.rekey else None
+
     if args.format == "json":
-        print(json.dumps({"summary": summary, "items": results}, indent=2))
+        out = {"summary": summary, "items": results}
+        if regrade:
+            out["regrade"] = regrade
+        print(json.dumps(out, indent=2))
     else:
         print(report_text(summary, results, markdown=args.format == "markdown"), end="")
+        if regrade:
+            print(report_regrade(regrade, markdown=args.format == "markdown"), end="")
 
     if args.write:
         if not bank:
