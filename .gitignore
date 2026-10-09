@@ -18,3 +18,6 @@ evals/workspace/
 Thumbs.db
 .vscode/
 .idea/
+
+# Local Canvas import test files
+canvas-import-test/
