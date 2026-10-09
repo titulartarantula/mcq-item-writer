@@ -64,6 +64,7 @@ Always look at how every option performed [NBME p. 27]:
 - **High/Low split**: the top and bottom 50%, or more informatively the top and bottom **27%** (Kelley, 1939), usually rounded to 25%.
 - With large numbers of learners, use quartiles or quintiles.
 - Difficulty and discrimination are usually computed on the whole group. **Option analysis is most informative when broken down by High/Low.**
+- *Beyond the guide:* on short quizzes, form each item's High/Low groups from the score on the **other** items. Otherwise the item's own answer can push its key into the High group and hide a competing correct answer. `scripts/analyze_responses.py` does this.
 
 **Across groups** [NBME pp. 27–28]:
 - Compare cohorts, sections, or years on the same items, ideally within performance bands.
@@ -131,7 +132,7 @@ Both groups prefer B over the key, and B pulls in strong learners even more than
 | `TOO_EASY` | p > .95 |
 | `TOO_HARD` | p < .30 |
 | `NONFUNCTIONAL_DISTRACTOR` | distractor chosen by < 5% of all learners *(DiBattista & Kurzawa, 2011)* |
-| `REVERSE_DISTRACTOR` | distractor chosen by more High than Low learners |
+| `REVERSE_DISTRACTOR` | distractor chosen by more High than Low learners, by 5 percentage points or more *(margin is our convention, to avoid flagging noise)* |
 | `DRIFT` | change in p of more than .15 against an earlier administration *(beyond the guide)* |
 
 ## Cautions

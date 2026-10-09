@@ -4,7 +4,7 @@ A Claude skill for writing, reviewing, and analysing **one-best-answer multiple-
 
 Defaults: 4 options per item (configurable; 3 is a research-backed alternative), explanatory feedback on every option, and optional diagnostic (ordered) items.
 
-> **Status: in development (v0.1.0-dev).** The reference content, item schema, and `SKILL.md` workflow are complete. The linter, exporters, analysis script, and evals are in progress, and until they land the skill falls back to manual checks. See the roadmap below.
+> **Status: in development (v0.1.0-dev).** The reference content, item schema, `SKILL.md` workflow, and scripts are complete and tested. Real-world evals and LMS import testing come next. See the roadmap below.
 
 ## What it will do
 
@@ -15,7 +15,19 @@ Defaults: 4 options per item (configurable; 3 is a research-backed alternative),
 | **Analyze** | learner response data | difficulty, discrimination, and option analysis, with flags for miskeys, items with two answers, and weak distractors |
 | **Blueprint** | objectives and weights | content × task grid that drives item writing |
 
-Planned export formats: JSON (canonical), Markdown review sheet, Moodle GIFT and Moodle XML, QTI 1.2 and 2.1, CSV, H5P.
+Export formats: JSON (canonical), Markdown review sheet, Moodle XML, Moodle GIFT, QTI 2.1 and QTI 1.2 packages (both validate against the official IMS schemas), CSV, and H5P (experimental).
+
+## Scripts
+
+Python 3.9+, standard library only. Install `jsonschema` for full schema validation; without it a basic structural check runs.
+
+```bash
+python skills/mcq-item-writer/scripts/lint_items.py bank.items.json          # flaw audit
+python skills/mcq-item-writer/scripts/export.py bank.items.json --format qti21
+python skills/mcq-item-writer/scripts/analyze_responses.py responses.csv --bank bank.items.json
+```
+
+Each script has `--help`. Tests: `python -m unittest discover -s tests -v`.
 
 ## Install (once published)
 
@@ -33,10 +45,11 @@ In Claude Code:
 skills/mcq-item-writer/
   SKILL.md                 workflow: intake, Write / Review / Analyze / Blueprint modes
   references/              item-writing principles, loaded on demand
-  scripts/                 linter, exporters, response analysis (in progress)
+  scripts/                 lint_items.py, export.py, analyze_responses.py (+ mcqlib.py)
   assets/                  item.schema.json + example-bank.json
 docs/source-map.md         guide section → reference file coverage
-evals/                     test items and generation tasks (in progress)
+tests/                     unit tests (seeded flaws, simulated response data, export checks)
+evals/                     skill-level evals (in progress)
 ```
 
 ## Roadmap
@@ -45,7 +58,7 @@ evals/                     test items and generation tasks (in progress)
 - [x] Phase 2: reference files distilled from the guide (12 files, page-cited, original examples)
 - [x] Phase 2b: supporting research added (Butler 2018; Xu et al. 2016): learning and feedback, ordered MC, administration
 - [x] Phase 3: item JSON schema, worked example bank, and `SKILL.md` workflow
-- [ ] Phase 4: `lint_items.py`, exporters, `analyze_responses.py`
+- [x] Phase 4: `lint_items.py`, `export.py` (7 formats), `analyze_responses.py`, 52 unit tests, CI
 - [ ] Phase 5: evals across several unrelated domains
 - [ ] Phase 6: v0.1.0 release
 

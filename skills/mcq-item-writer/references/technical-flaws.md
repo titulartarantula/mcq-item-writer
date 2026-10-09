@@ -204,6 +204,23 @@ Every option, the key included, must carry feedback explaining why it is or isn'
 
 **Detect:** any option with empty feedback, or feedback under about 8 words, or feedback that only restates correct/incorrect *(automatable)*.
 
+### Structural and audit codes (linter only)
+
+These aren't item-writing flaws. They check that the bank is complete and consistent. `scripts/lint_items.py` reports them alongside the flaw codes.
+
+| Code | Severity | Meaning |
+|---|---|---|
+| SCHEMA-INVALID | error | The bank doesn't match `assets/item.schema.json` (e.g. two keys, missing feedback, lead-in without "?") |
+| SCHEMA-DUPLICATE-ID | error | Two items share an id |
+| SCHEMA-SET-REF | error/warning | A set lists an unknown item, an update refers to an item outside the set, or `set_id` doesn't match |
+| SCHEMA-LABELS | warning | Option labels aren't A, B, C... in order |
+| SCHEMA-ORDERED-LEVELS | error/warning | Ordered-MC levels aren't 1..n, the key isn't the top level, or the progression hasn't been confirmed by the user |
+| X-COVER-THE-OPTIONS | error/info | The item failed the cover-the-options check, or no stem-only answer was recorded |
+| X-SME-PENDING | info | Expert verification is required and not yet approved |
+| X-RECALL | info | Recall item with no scenario. Fine for formative use; prefer application for summative |
+
+A reviewer can accept a finding by setting `"resolved": true` and adding a `"resolution"` note on its `audit.lint` entry. The linter won't repeat it.
+
 ---
 
 ## Summary table

@@ -57,7 +57,7 @@ Progression: *evaluating a survey estimate*
 >
 > A. It is trustworthy because the sample is large *(level 1)*
 > B. It is accurate within normal random sampling error *(level 2)*
-> C. It likely overstates support because respondents selected themselves *(level 3, key)*
+> C. It is likely too high because respondents selected themselves *(level 3, key)*
 
 ## Feedback in ordered MC
 

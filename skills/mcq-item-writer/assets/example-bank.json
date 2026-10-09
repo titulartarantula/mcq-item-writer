@@ -235,7 +235,7 @@
         },
         {
           "label": "C",
-          "text": "It likely overstates support because respondents selected themselves",
+          "text": "It is likely too high because respondents selected themselves",
           "correct": true,
           "feedback": "Correct. People who follow a cycling club and choose to answer are more likely to support bike lanes, so the 81% probably overstates support among all residents. A large sample doesn't remove this bias.",
           "misconception": null,
@@ -278,7 +278,7 @@
         "cover_the_options": {
           "passed": true,
           "stem_only_answer": "It's probably biased upward because cycling-club followers chose to respond.",
-          "notes": "Options parallel and 8 words each, so the key doesn't stand out."
+          "notes": "Options parallel and 8–9 words each, so the key doesn't stand out."
         },
         "lint": [],
         "warnings": []

@@ -158,7 +158,7 @@ Respect the author's intent and content. Revise the item's form, but don't chang
 Use this when the user has response data from a delivered quiz.
 
 ```bash
-python <skill-dir>/scripts/analyze_responses.py <responses.csv> --bank <bank.json> [--groups 27]
+python <skill-dir>/scripts/analyze_responses.py <responses.csv> --bank <bank.json> [--groups 27] [--format text|markdown|json] [--write]
 ```
 
 The script computes:
@@ -174,7 +174,7 @@ Report flags as **prompts for expert review, never automatic verdicts**. For eac
 - give the most likely cause
 - recommend an action: rekey, revise distractor, rewrite, drop from scoring, or keep
 
-Warn about unstable statistics with fewer than about 30 learners. Point out that changing distractors creates a new item whose statistics start over.
+Warn about unstable statistics with fewer than about 30 learners. Point out that changing distractors creates a new item whose statistics start over. With `--write`, the statistics are stored in each item's `stats`, so the next run can check for drift.
 
 ---
 
@@ -198,14 +198,14 @@ Show the grid to the user for approval before writing items against it. It's muc
 
 **Files.** Save to the user's chosen location, or to the current project if none is given:
 - `<name>.items.json`: the bank, valid against `assets/item.schema.json`. This is the format other projects and the exporters read, so keep it complete.
-- `<name>.review.md`: a human-readable review sheet (template below), for subject-matter experts and reviewers.
+- `<name>.review.md`: a human-readable review sheet for subject-matter experts and reviewers. Generate it with `export.py --format markdown` so it always matches the JSON. The template below shows what it contains.
 - Exports, if requested:
 
 ```bash
-python <skill-dir>/scripts/export.py <bank.json> --format moodle-xml|gift|qti21|qti12|csv|h5p [--out <path>]
+python <skill-dir>/scripts/export.py <bank.json> --format moodle-xml|gift|qti21|qti12|csv|h5p|markdown [--out <path>] [--only-status approved]
 ```
 
-The exporters carry feedback, shuffle flags, partial credit for ordered MC where the format supports it, and set order. Tell the user what a given format can't carry (e.g. H5P has no partial credit). If the exporter isn't available, hand-write only the simple text formats (GIFT, CSV), and say the file hasn't been machine-checked. Don't hand-write QTI or H5P packages.
+The exporters carry feedback, shuffle flags, partial credit for ordered MC where the format supports it, and set order. Each run prints the format's limitations; pass them on to the user (e.g. H5P has no partial credit). Exports refuse a bank that doesn't validate, and warn when items are still drafts. `--only-status approved` exports only reviewed items. If the exporter isn't available, hand-write only the simple text formats (GIFT, CSV), and say the file hasn't been machine-checked. Don't hand-write QTI or H5P packages.
 
 **Review sheet template:**
 
